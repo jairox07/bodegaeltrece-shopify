@@ -1,0 +1,101 @@
+{%- comment -%}
+  Catas y maridajes: foto en blanco y negro y frases de la bodega en carrusel.
+  Las frases son de El Trece; si después hay reseñas reales de clientes, se agregan como bloques con su nombre.
+{%- endcomment -%}
+{%- assign s = section.settings -%}
+<section class="et-sec et-sec--paper et-catas" data-et-quotes>
+  <div class="et-wrap et-catas__in">
+    <figure class="et-catas__media et-reveal">
+      {%- if s.image != blank -%}
+        {{ s.image | image_url: width: 1400 | image_tag: loading: 'lazy', sizes: '(min-width: 990px) 600px, 100vw', widths: '600, 900, 1200, 1400' }}
+      {%- else -%}
+        <img src="{{ 'et-hero.jpg' | asset_url }}" alt="" loading="lazy" width="1600" height="1067">
+      {%- endif -%}
+      {%- if s.caption != blank -%}<figcaption>{{ s.caption }}</figcaption>{%- endif -%}
+    </figure>
+
+    <div class="et-catas__copy">
+      <header class="et-catas__head et-reveal">
+        <div>
+          {%- if s.eyebrow != blank -%}<p class="et-eyebrow">{{ s.eyebrow }}</p>{%- endif -%}
+          <h2 class="et-h2">{{ s.title }}</h2>
+        </div>
+        <span class="et-catas__mark" aria-hidden="true">{%- render 'et-botanic', kind: 'leaf' -%}</span>
+      </header>
+
+      <div class="et-catas__quotes et-reveal" style="--i:1" aria-live="polite">
+        {%- for block in section.blocks -%}
+          <blockquote class="et-catas__q{% if forloop.first %} is-on{% endif %}" {{ block.shopify_attributes }}>
+            <span class="et-catas__open" aria-hidden="true">“</span>
+            <p>{{ block.settings.quote }}</p>
+            {%- if block.settings.author != blank -%}<footer>{{ block.settings.author }}</footer>{%- endif -%}
+          </blockquote>
+        {%- endfor -%}
+      </div>
+
+      <div class="et-catas__foot et-reveal" style="--i:2">
+        {%- if s.button != blank -%}<a class="et-btn et-btn--solid" href="{{ s.button_url | default: '/pages/restaurantes' }}">{{ s.button }}</a>{%- endif -%}
+        {%- if section.blocks.size > 1 -%}
+          <div class="et-catas__nav">
+            <button type="button" class="et-icon-btn" data-q-prev aria-label="Frase anterior"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M15 5l-7 7 7 7"/></svg></button>
+            <button type="button" class="et-icon-btn" data-q-next aria-label="Frase siguiente"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 5l7 7-7 7"/></svg></button>
+          </div>
+        {%- endif -%}
+      </div>
+    </div>
+  </div>
+</section>
+<script>
+  (function () {
+    document.querySelectorAll('[data-et-quotes]').forEach(function (root) {
+      if (root.dataset.ready) return; root.dataset.ready = '1';
+      var qs = root.querySelectorAll('.et-catas__q'); if (qs.length < 2) return;
+      var i = 0, t;
+      function go(n) { qs[i].classList.remove('is-on'); i = (n + qs.length) % qs.length; qs[i].classList.add('is-on'); }
+      function auto() { clearInterval(t); if (!matchMedia('(prefers-reduced-motion: reduce)').matches) t = setInterval(function () { go(i + 1); }, 7000); }
+      var p = root.querySelector('[data-q-prev]'), n = root.querySelector('[data-q-next]');
+      if (p) p.addEventListener('click', function () { go(i - 1); auto(); });
+      if (n) n.addEventListener('click', function () { go(i + 1); auto(); });
+      auto();
+    });
+  })();
+</script>
+{% stylesheet %}
+  .et-catas__in { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(32px, 6vw, 96px); align-items: center; }
+  .et-catas__media { margin: 0; position: relative; }
+  .et-catas__media img { width: 100%; aspect-ratio: 5 / 4; object-fit: cover; display: block; filter: grayscale(1) contrast(1.08) brightness(.96); transition: filter 1.2s var(--et-ease); }
+  .et-catas__media:hover img { filter: grayscale(.15) contrast(1.04); }
+  .et-catas__media figcaption { font-family: var(--et-sans); font-size: .7rem; letter-spacing: .16em; text-transform: uppercase; opacity: .6; margin-top: 12px; }
+  .et-catas__head { display: flex; justify-content: space-between; align-items: flex-start; gap: 24px; }
+  .et-catas__mark { width: 84px; color: var(--et-gold-deep); transform: rotate(-14deg); flex: none; }
+  .et-catas__quotes { display: grid; margin-top: clamp(28px, 4vw, 44px); min-height: 190px; }
+  .et-catas__q { grid-area: 1 / 1; margin: 0; opacity: 0; transform: translateY(10px); transition: opacity .8s var(--et-ease), transform .8s var(--et-ease); pointer-events: none; }
+  .et-catas__q.is-on { opacity: 1; transform: none; pointer-events: auto; }
+  .et-catas__open { font-family: var(--et-serif); font-size: 4rem; line-height: .5; color: var(--et-gold-deep); display: block; height: 28px; }
+  .et-catas__q p { font-family: var(--et-serif); font-size: clamp(1.25rem, 1.9vw, 1.6rem); line-height: 1.4; margin: 0; max-width: 32ch; }
+  .et-catas__q footer { font-family: var(--et-sans); font-size: .72rem; letter-spacing: .18em; text-transform: uppercase; margin-top: 18px; opacity: .65; }
+  .et-catas__foot { display: flex; flex-wrap: wrap; gap: 20px; align-items: center; justify-content: space-between; margin-top: 36px; padding-top: 28px; border-top: 1px solid var(--et-line); }
+  .et-catas__nav { display: flex; gap: 10px; }
+  @media (max-width: 749px) { .et-catas__in { grid-template-columns: 1fr; } .et-catas__quotes { min-height: 220px; } }
+{% endstylesheet %}
+{% schema %}
+{
+  "name": "El Trece: catas",
+  "settings": [
+    { "type": "image_picker", "id": "image", "label": "Foto (se muestra en blanco y negro)" },
+    { "type": "text", "id": "caption", "label": "Pie de foto", "default": "Cata y maridaje El Trece" },
+    { "type": "text", "id": "eyebrow", "label": "Antetítulo", "default": "Catas y maridajes" },
+    { "type": "text", "id": "title", "label": "Título", "default": "Cada copa tiene una historia." },
+    { "type": "text", "id": "button", "label": "Botón", "default": "Agenda una cata" },
+    { "type": "url", "id": "button_url", "label": "Liga del botón" }
+  ],
+  "blocks": [
+    { "type": "frase", "name": "Frase", "settings": [
+      { "type": "textarea", "id": "quote", "label": "Frase", "default": "Hay vinos que invitan a hacer una pausa." },
+      { "type": "text", "id": "author", "label": "Autor", "default": "El Trece" }
+    ] }
+  ],
+  "max_blocks": 6,
+  "presets": [{ "name": "El Trece: catas", "blocks": [{ "type": "frase" }] }]
+}
+{% endschema %}

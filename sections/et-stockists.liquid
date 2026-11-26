@@ -1,0 +1,88 @@
+{%- comment -%}
+  Página "Dónde comprar": socios comerciales, cada uno con su propio mapa.
+  Cada socio es un bloque. Sitio, Instagram y Facebook son opcionales.
+  "Ancla" es el identificador que usan los enlaces del pie de página (/pages/donde-comprar#ancla).
+{%- endcomment -%}
+{%- assign s = section.settings -%}
+<section class="et-where" id="donde">
+  <header class="et-where__hero">
+    <div class="et-wrap">
+      {%- if s.eyebrow != blank -%}<p class="et-eyebrow">{{ s.eyebrow }}</p>{%- endif -%}
+      <h1 class="et-where__title">{{ s.title }}</h1>
+      {%- render 'et-ornament', class: 'et-where__orn' -%}
+      {%- if s.text != blank -%}<p class="et-where__lead">{{ s.text }}</p>{%- endif -%}
+    </div>
+  </header>
+  <div class="et-wrap">
+    <div class="et-where__grid">
+      {%- for block in section.blocks -%}
+        {%- assign b = block.settings -%}
+        {%- capture q -%}{%- if b.map_query != blank -%}{{ b.map_query }}{%- else -%}{{ b.name }} {{ b.city }}{%- endif -%}{%- endcapture -%}
+        <article class="et-where__card" id="{{ b.anchor | default: block.id }}" {{ block.shopify_attributes }}>
+          <div class="et-where__map">
+            <iframe title="Mapa de {{ b.name | escape }}" loading="lazy" referrerpolicy="no-referrer-when-downgrade" src="https://www.google.com/maps?q={{ q | url_encode }}&output=embed&hl=es"></iframe>
+          </div>
+          <div class="et-where__body">
+            <p class="et-where__kind">{{ b.kind }} · {{ b.city }}</p>
+            <h2 class="et-where__name">{{ b.name }}</h2>
+            {%- if b.address != blank -%}<p class="et-where__addr">{{ b.address }}</p>{%- endif -%}
+            <div class="et-where__links">
+              <a class="et-where__go" href="https://www.google.com/maps/search/?api=1&query={{ q | url_encode }}" target="_blank" rel="noopener">Cómo llegar</a>
+              {%- if b.url != blank -%}<a href="{{ b.url }}" target="_blank" rel="noopener">Sitio web</a>{%- endif -%}
+              {%- if b.instagram != blank -%}<a href="{{ b.instagram }}" target="_blank" rel="noopener">Instagram</a>{%- endif -%}
+              {%- if b.facebook != blank -%}<a href="{{ b.facebook }}" target="_blank" rel="noopener">Facebook</a>{%- endif -%}
+            </div>
+          </div>
+        </article>
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+{% stylesheet %}
+  .et-where { background: #f5f0e6; color: #15110e; padding-bottom: clamp(64px, 9vw, 120px); }
+  .et-where__hero { background: radial-gradient(60% 80% at 50% 0%, rgba(201,163,92,.22), transparent 70%), #15110e; color: #ede6d6; text-align: center; padding: clamp(72px, 10vw, 140px) 0 clamp(96px, 12vw, 170px); }
+  .et-where__hero .et-eyebrow { color: #c9a35c; opacity: 1; }
+  .et-where__title { font-family: var(--et-serif); font-weight: 400; font-size: clamp(2.4rem, 5.4vw, 4.4rem); line-height: 1.05; margin: 0 auto; max-width: 18ch; color: #f5f0e6; text-wrap: balance; }
+  .et-where__orn { color: #c9a35c; margin: 26px auto 22px; }
+  .et-where__lead { margin: 0 auto; max-width: 56ch; color: rgba(237,230,214,.8); line-height: 1.7; }
+  .et-where__grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(20px, 3vw, 36px); margin-top: calc(-1 * clamp(56px, 8vw, 110px)); position: relative; }
+  .et-where__card { background: #fff; border: 1px solid rgba(140,106,46,.3); border-radius: 6px; overflow: hidden; display: grid; grid-template-rows: auto 1fr; box-shadow: 0 30px 60px -36px rgba(21,17,14,.45); scroll-margin-top: 120px; transition: transform .4s var(--et-ease), box-shadow .4s var(--et-ease); }
+  .et-where__card:hover { transform: translateY(-4px); box-shadow: 0 40px 70px -36px rgba(21,17,14,.55); }
+  .et-where__card:target { outline: 2px solid #c9a35c; outline-offset: 4px; }
+  .et-where__map { aspect-ratio: 16 / 10; background: #e9e0cc; border-bottom: 3px solid #c9a35c; }
+  .et-where__map iframe { width: 100%; height: 100%; border: 0; display: block; filter: grayscale(.25) sepia(.12); }
+  .et-where__body { padding: clamp(22px, 2.6vw, 32px); display: grid; align-content: start; gap: 8px; }
+  .et-where__kind { margin: 0; color: #8c6a2e; text-transform: uppercase; letter-spacing: .18em; font-size: .7rem; font-weight: 600; }
+  .et-where__name { margin: 0; font-family: var(--et-serif); font-weight: 400; font-size: clamp(1.5rem, 2.4vw, 2rem); line-height: 1.15; }
+  .et-where__addr { margin: 0; color: #5a4a36; font-size: .92rem; }
+  .et-where__links { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 14px; }
+  .et-where__links a { display: inline-flex; align-items: center; min-height: 40px; padding: 0 16px; border: 1px solid rgba(21,17,14,.25); border-radius: 999px; color: #15110e; text-decoration: none; font-size: .72rem; letter-spacing: .14em; text-transform: uppercase; transition: background-color .25s, color .25s, border-color .25s; }
+  .et-where__links a:hover { border-color: #15110e; background: #15110e; color: #f5f0e6; }
+  .et-where__links .et-where__go { background: #15110e; border-color: #15110e; color: #f5f0e6; }
+  .et-where__links .et-where__go:hover { background: #6b1e29; border-color: #6b1e29; }
+  @media (max-width: 799px) { .et-where__grid { grid-template-columns: 1fr; } }
+{% endstylesheet %}
+{% schema %}
+{
+  "name": "El Trece: dónde comprar",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Antetítulo", "default": "Dónde encontrarnos" },
+    { "type": "text", "id": "title", "label": "Título", "default": "Nuestros socios, donde El Trece se disfruta." },
+    { "type": "textarea", "id": "text", "label": "Texto", "default": "Lugares de confianza donde puedes comprar o probar nuestros vinos." }
+  ],
+  "blocks": [
+    { "type": "socio", "name": "Socio", "settings": [
+      { "type": "text", "id": "name", "label": "Nombre", "default": "Nombre del lugar" },
+      { "type": "text", "id": "kind", "label": "Tipo", "default": "Restaurante" },
+      { "type": "text", "id": "city", "label": "Ciudad", "default": "Guadalajara" },
+      { "type": "text", "id": "address", "label": "Dirección (opcional)" },
+      { "type": "text", "id": "map_query", "label": "Búsqueda para el mapa (opcional)" },
+      { "type": "text", "id": "anchor", "label": "Ancla (para enlaces del pie, sin espacios)" },
+      { "type": "url", "id": "url", "label": "Sitio web" },
+      { "type": "url", "id": "instagram", "label": "Instagram" },
+      { "type": "url", "id": "facebook", "label": "Facebook" }
+    ] }
+  ],
+  "presets": [{ "name": "El Trece: dónde comprar" }]
+}
+{% endschema %}

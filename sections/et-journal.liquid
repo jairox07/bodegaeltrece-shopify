@@ -1,0 +1,75 @@
+{%- comment -%} Portada: últimos artículos del Diario (uno grande y dos apilados). {%- endcomment -%}
+{%- assign s = section.settings -%}
+{%- assign b = s.blog | default: blogs['diario'] -%}
+<section class="et-sec et-sec--paper et-journal" aria-labelledby="EtJournal-{{ section.id }}">
+  {%- render 'et-botanic', kind: 'branch', class: 'et-journal__vine' -%}
+  <div class="et-wrap">
+    <header class="et-journal__head">
+      <div>
+        <p class="et-eyebrow et-reveal">{{ s.eyebrow }}</p>
+        <h2 class="et-h2" id="EtJournal-{{ section.id }}">{{ s.title }}</h2>
+      </div>
+      {%- if b != blank -%}<a class="et-link et-reveal" style="--i:1" href="{{ b.url }}">Ver todos los artículos</a>{%- endif -%}
+    </header>
+    {%- if b != blank and b.articles_count > 0 -%}
+      <div class="et-journal__grid">
+        {%- for a in b.articles limit: 3 -%}
+          <article class="et-post{% if forloop.first %} et-post--lead{% endif %} et-reveal" style="--i:{{ forloop.index }}">
+            <a class="et-post__media" href="{{ a.url }}" tabindex="-1" aria-hidden="true">
+              {%- if a.image -%}
+                {{ a.image | image_url: width: 1400 | image_tag: loading: 'lazy', sizes: '(min-width: 990px) 50vw, 100vw', widths: '500, 800, 1100, 1400', alt: '' }}
+              {%- else -%}
+                <span class="et-post__ph">{%- render 'et-botanic', kind: 'cluster' -%}</span>
+              {%- endif -%}
+            </a>
+            <div class="et-post__body">
+              <p class="et-post__meta">{{ a.published_at | date: '%d · %m · %Y' }}{% if a.tags.size > 0 %} · {{ a.tags.first }}{% endif %}</p>
+              <h3 class="et-post__title"><a href="{{ a.url }}">{{ a.title }}</a></h3>
+              {%- if forloop.first -%}<p class="et-post__excerpt">{{ a.excerpt_or_content | strip_html | truncatewords: 30 }}</p>{%- endif -%}
+              <a class="et-post__more" href="{{ a.url }}" aria-label="Leer: {{ a.title | escape }}">Leer<span aria-hidden="true"> ⟶</span></a>
+            </div>
+          </article>
+        {%- endfor -%}
+      </div>
+    {%- else -%}
+      <p class="et-empty">Pronto publicaremos los primeros artículos del Diario.</p>
+    {%- endif -%}
+  </div>
+</section>
+{% stylesheet %}
+  .et-journal__vine { position: absolute; right: -40px; top: 40px; width: min(460px, 50vw); color: var(--et-gold); opacity: .55; pointer-events: none; }
+  .et-journal__head { display: flex; justify-content: space-between; align-items: end; gap: 24px; flex-wrap: wrap; margin-bottom: clamp(36px, 5vw, 64px); position: relative; }
+  .et-journal__grid { display: grid; grid-template-columns: 1.35fr 1fr; grid-template-rows: auto auto; gap: clamp(28px, 3vw, 48px) clamp(28px, 4vw, 64px); }
+  .et-post { display: grid; gap: 18px; align-content: start; }
+  .et-post--lead { grid-row: span 2; }
+  .et-post:not(.et-post--lead) { grid-template-columns: minmax(0, 200px) 1fr; align-items: center; gap: 24px; }
+  .et-post__media { display: block; overflow: hidden; border-radius: 18px; background: var(--et-panel); }
+  .et-post__media img { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; display: block; transition: transform 1.4s var(--et-ease); }
+  .et-post--lead .et-post__media img { aspect-ratio: 5 / 4; }
+  .et-post:not(.et-post--lead) .et-post__media img { aspect-ratio: 1; }
+  .et-post:hover .et-post__media img { transform: scale(1.05); }
+  .et-post__ph { display: grid; place-items: center; aspect-ratio: 4 / 3; color: var(--et-gold-deep); padding: 18%; box-sizing: border-box; }
+  .et-post__meta { font-family: var(--et-sans); font-size: .68rem; letter-spacing: .2em; text-transform: uppercase; opacity: .6; margin: 0 0 8px; }
+  .et-post__title { font-family: var(--et-serif); font-weight: 400; font-size: clamp(1.3rem, 2vw, 1.6rem); line-height: 1.2; margin: 0; text-wrap: balance; }
+  .et-post--lead .et-post__title { font-size: clamp(1.7rem, 3vw, 2.4rem); }
+  .et-post__title a { color: inherit; text-decoration: none; background: linear-gradient(currentColor, currentColor) 0 100% / 0 1px no-repeat; transition: background-size .6s var(--et-ease); }
+  .et-post:hover .et-post__title a { background-size: 100% 1px; }
+  .et-post__excerpt { font-family: var(--et-sans); line-height: 1.7; opacity: .8; margin: 14px 0 0; max-width: 56ch; }
+  .et-post__more { display: inline-block; margin-top: 14px; font-family: var(--et-sans); font-size: .72rem; letter-spacing: .2em; text-transform: uppercase; font-weight: 600; color: var(--et-wine); text-decoration: none; }
+  @media (max-width: 989px) {
+    .et-journal__grid { grid-template-columns: 1fr; }
+    .et-post--lead { grid-row: auto; }
+  }
+  @media (max-width: 559px) { .et-post:not(.et-post--lead) { grid-template-columns: 110px 1fr; gap: 16px; } }
+{% endstylesheet %}
+{% schema %}
+{
+  "name": "El Trece: diario",
+  "settings": [
+    { "type": "blog", "id": "blog", "label": "Blog" },
+    { "type": "text", "id": "eyebrow", "label": "Antetítulo", "default": "Diario El Trece" },
+    { "type": "text", "id": "title", "label": "Título", "default": "Para saber más de lo que hay en la copa." }
+  ],
+  "presets": [{ "name": "El Trece: diario" }]
+}
+{% endschema %}

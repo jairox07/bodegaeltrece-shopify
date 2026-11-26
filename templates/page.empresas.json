@@ -1,0 +1,16 @@
+{
+  "sections": {
+    "temporada": {
+      "type": "et-season-bar",
+      "settings": {}
+    },
+    "cotizador": {
+      "type": "et-corporate-quote",
+      "settings": {}
+    }
+  },
+  "order": [
+    "temporada",
+    "cotizador"
+  ]
+}

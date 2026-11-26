@@ -1,0 +1,53 @@
+{
+  "type": "footer",
+  "name": "t:names.footer",
+  "sections": {
+    "et_footer": {
+      "type": "et-footer",
+      "settings": {
+        "instagram": "https://www.instagram.com/eltrecemp/",
+        "facebook": "https://www.facebook.com/eltrecemp",
+        "whatsapp": "523314323987"
+      },
+      "blocks": {
+        "c1": {
+          "type": "texto",
+          "settings": {
+            "title": "Vinos",
+            "text": "<p><a href=\"/collections/vinos\">Toda la colección</a></p><p><a href=\"/collections/cajas-y-sets\">Cajas y sets</a></p><p><a href=\"/#club\">Club El Trece</a></p>"
+          }
+        },
+        "c2": {
+          "type": "texto",
+          "settings": {
+            "title": "Empresas",
+            "text": "<p><a href=\"/pages/empresas\">Regalos corporativos</a></p><p><a href=\"/#cotizar\">Cotizador</a></p><p><a href=\"/pages/restaurantes\">Restaurantes y hoteles</a></p><p><a href=\"/blogs/diario\">Diario</a></p><p><a href=\"/pages/preguntas-frecuentes\">Preguntas frecuentes</a></p>"
+          }
+        },
+        "c3": {
+          "type": "texto",
+          "settings": {
+            "title": "La casa",
+            "text": "<p>San Pedro Tlaquepaque, Jalisco</p><p>Uva del Valle de Santo Tomás, B.C.</p><p>Entregas en la ZMG</p>"
+          }
+        },
+        "c4": {
+          "type": "texto",
+          "settings": {
+            "title": "Dónde encontrarnos",
+            "text": "<p><a href=\"/pages/donde-comprar#la-vizcaina\">La Vizcaína</a></p><p><a href=\"/pages/donde-comprar#serenzzo-hotel-cuisine\">Serenzzo Hotel & Cuisine</a></p><p><a href=\"/pages/donde-comprar#encanto-fuego-mar\">Encanto Fuego & Mar</a></p><p><a href=\"/pages/donde-comprar#el-rio-country-club\">El Río Country Club</a></p>"
+          }
+        }
+      },
+      "block_order": [
+        "c1",
+        "c2",
+        "c4",
+        "c3"
+      ]
+    }
+  },
+  "order": [
+    "et_footer"
+  ]
+}

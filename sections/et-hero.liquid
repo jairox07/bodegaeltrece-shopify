@@ -1,0 +1,105 @@
+{%- comment -%} Portada: foto a sangre con degradado, nombre de la bodega y un llamado. {%- endcomment -%}
+{%- assign s = section.settings -%}
+<section class="et-hero" style="--et-hero-h: {{ s.height }}svh; --et-hero-pos: {{ s.focal }};">
+  <div class="et-hero__media">
+    {%- if s.show_video -%}
+      <video class="et-hero__video" muted loop playsinline preload="none" poster="{{ 'et-hero-poster.jpg' | asset_url }}" data-src="{{ 'et-hero.mp4' | asset_url }}" data-src-m="{{ 'et-hero-m.mp4' | asset_url }}" aria-hidden="true"></video>
+    {%- elsif s.image != blank -%}
+      {%- assign hero_alt = s.image.alt | default: s.title -%}
+      {{ s.image | image_url: width: 2400 | image_tag: loading: 'eager', fetchpriority: 'high', sizes: '100vw', widths: '750, 1100, 1500, 1920, 2400', class: 'et-hero__img', alt: hero_alt }}
+    {%- else -%}
+      <img src="{{ 'et-hero.jpg' | asset_url }}" alt="Bodega El Trece" loading="lazy" width="1600" height="1067">
+    {%- endif -%}
+    <span class="et-hero__shade" aria-hidden="true"></span>
+    <span class="et-hero__grain" aria-hidden="true"></span>
+  </div>
+  <a class="et-hero__cue" href="#main-after-hero" aria-label="Bajar"><span>Descubre</span><i></i></a>
+
+  <div class="et-hero__content et-wrap">
+    {%- if s.eyebrow != blank -%}<p class="et-eyebrow et-reveal" style="--i:0">{{ s.eyebrow }}</p>{%- endif -%}
+    <h1 class="et-hero__title" style="--i:1">{{ s.title }}</h1>
+    {%- if s.text != blank -%}<div class="et-hero__text et-reveal" style="--i:2">{{ s.text }}</div>{%- endif -%}
+    <div class="et-hero__ctas et-reveal" style="--i:3">
+      {%- if s.cta1_label != blank -%}<a class="et-btn" href="{{ s.cta1_url | default: routes.all_products_collection_url }}">{{ s.cta1_label }}</a>{%- endif -%}
+      {%- if s.cta2_label != blank -%}<a class="et-link" href="{{ s.cta2_url | default: '#cotizar' }}">{{ s.cta2_label }}</a>{%- endif -%}
+    </div>
+  </div>
+
+  {%- if section.blocks.size > 0 -%}
+    <dl class="et-hero__meta et-wrap">
+      {%- for block in section.blocks -%}
+        <div {{ block.shopify_attributes }}><dt>{{ block.settings.label }}</dt><dd>{{ block.settings.value }}</dd></div>
+      {%- endfor -%}
+    </dl>
+  {%- endif -%}
+</section>
+<span id="main-after-hero"></span>
+<script>
+  (function () {
+    var v = document.querySelector('.et-hero__video'); if (!v) return;
+    var c = navigator.connection || {};
+    if ((window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) || c.saveData) return;
+    function go() {
+      v.src = window.innerWidth < 750 ? v.dataset.srcM : v.dataset.src;
+      v.addEventListener('canplay', function () { v.classList.add('is-ready'); }, { once: true });
+      var p = v.play(); if (p && p.catch) p.catch(function () {});
+    }
+    if (document.readyState === 'complete') setTimeout(go, 300); else window.addEventListener('load', function () { setTimeout(go, 300); });
+  })();
+</script>
+{% stylesheet %}
+  .et-hero { position: relative; min-height: var(--et-hero-h, 88svh); display: grid; grid-template-rows: 1fr auto; color: var(--et-cream, #ede6d6); background: var(--et-ink, #15110e); isolation: isolate; overflow: hidden; }
+  .et-hero__media { position: absolute; inset: 0; z-index: -1; }
+  .et-hero__video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; background: #15110e url({{ 'et-hero-poster.jpg' | asset_url }}) center / cover no-repeat; }
+  .et-hero__img { width: 100%; height: 100%; object-fit: cover; object-position: var(--et-hero-pos, center); display: block; transform: scale(1.04); animation: et-hero-zoom 14s cubic-bezier(.16,1,.3,1) forwards; }
+  .et-hero__shade { position: absolute; inset: 0; background:
+      linear-gradient(180deg, rgba(21,17,14,.55) 0%, rgba(21,17,14,.15) 32%, rgba(21,17,14,.25) 58%, rgba(21,17,14,.92) 100%),
+      radial-gradient(ellipse 70% 55% at 50% 48%, rgba(21,17,14,.35), transparent 70%); }
+  .et-hero__content { align-self: center; text-align: center; display: grid; justify-items: center; padding-block: clamp(96px, 14vh, 160px) 48px; }
+  .et-hero__title { font-family: var(--et-serif); font-weight: 400; font-size: clamp(3.2rem, 9vw, 7.5rem); line-height: .95; letter-spacing: -.02em; margin: 0; text-wrap: balance; text-shadow: 0 2px 30px rgba(21,17,14,.35); }
+  .et-hero__text { font-family: var(--et-sans); font-size: clamp(1rem, 1.4vw, 1.15rem); line-height: 1.65; max-width: 46ch; margin-top: 22px; opacity: .9; }
+  .et-hero__text p { margin: 0; }
+  .et-hero__ctas { display: flex; flex-wrap: wrap; gap: 18px 32px; align-items: center; justify-content: center; margin-top: 36px; }
+  .et-hero__meta { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 16px 32px; margin: 0 auto; padding-block: 22px 28px; border-top: 1px solid rgba(237,230,214,.22); }
+  .et-hero__meta div { text-align: center; }
+  .et-hero__meta dt { font-family: var(--et-sans); text-transform: uppercase; letter-spacing: .2em; font-size: .66rem; opacity: .6; }
+  .et-hero__meta dd { margin: 6px 0 0; font-family: var(--et-serif); font-size: 1.05rem; }
+  .et-hero__grain { position: absolute; inset: -50%; opacity: .09; mix-blend-mode: overlay; pointer-events: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); animation: et-grain 1.2s steps(6) infinite; }
+  .et-hero__cue { position: absolute; left: 50%; bottom: clamp(20px, 4vh, 40px); translate: -50% 0; display: grid; justify-items: center; gap: 12px; color: inherit; text-decoration: none; font-family: var(--et-sans); font-size: .62rem; letter-spacing: .3em; text-transform: uppercase; opacity: .75; z-index: 2; }
+  .et-hero__cue i { width: 1px; height: 56px; background: linear-gradient(var(--et-gold), transparent); transform-origin: top; animation: et-cue 2.4s var(--et-ease) infinite; }
+  .et-hero__content { will-change: opacity, transform; }
+  @keyframes et-cue { 0% { transform: scaleY(0); } 50% { transform: scaleY(1); transform-origin: top; } 51% { transform-origin: bottom; } 100% { transform: scaleY(0); transform-origin: bottom; } }
+  @keyframes et-grain { 0%,100% { transform: translate(0,0); } 20% { transform: translate(-5%,4%); } 40% { transform: translate(4%,-6%); } 60% { transform: translate(-3%,7%); } 80% { transform: translate(6%,2%); } }
+  @media (max-width: 749px) { .et-hero__cue { display: none; } }
+  @media (prefers-reduced-motion: reduce) { .et-hero__grain, .et-hero__cue i { animation: none; } }
+  @keyframes et-hero-zoom { to { transform: scale(1); } }
+  @media (prefers-reduced-motion: reduce) { .et-hero__img { animation: none; transform: none; } }
+  @media (max-width: 749px) { .et-hero__meta { grid-template-columns: 1fr; gap: 10px; } .et-hero__meta div { display: flex; justify-content: space-between; text-align: left; } .et-hero__meta dd { margin: 0; } }
+{% endstylesheet %}
+{% schema %}
+{
+  "name": "El Trece: portada",
+  "settings": [
+    { "type": "checkbox", "id": "show_video", "label": "Usar video de fondo", "default": true },
+    { "type": "image_picker", "id": "image", "label": "Foto de fondo (paisaje o viñedo, sin personas bebiendo)" },
+    { "type": "select", "id": "focal", "label": "Punto de enfoque de la foto", "default": "center", "options": [
+      { "value": "center top", "label": "Arriba" }, { "value": "center", "label": "Centro" }, { "value": "center bottom", "label": "Abajo" } ] },
+    { "type": "range", "id": "height", "label": "Alto (% de pantalla)", "min": 60, "max": 100, "step": 4, "unit": "%", "default": 88 },
+    { "type": "text", "id": "eyebrow", "label": "Antetítulo", "default": "Vinos de autor · Valle de Santo Tomás, B.C." },
+    { "type": "text", "id": "title", "label": "Título", "default": "Bodega El Trece" },
+    { "type": "richtext", "id": "text", "label": "Texto", "default": "<p>Vinos para la mesa que se comparte, el regalo que se recuerda y la sobremesa sin prisa.</p>" },
+    { "type": "text", "id": "cta1_label", "label": "Botón principal", "default": "Ver la colección" },
+    { "type": "url", "id": "cta1_url", "label": "Liga del botón principal" },
+    { "type": "text", "id": "cta2_label", "label": "Liga secundaria", "default": "Regalos para empresas" },
+    { "type": "url", "id": "cta2_url", "label": "Liga secundaria (destino)" }
+  ],
+  "blocks": [
+    { "type": "dato", "name": "Dato", "settings": [
+      { "type": "text", "id": "label", "label": "Etiqueta", "default": "Casa" },
+      { "type": "text", "id": "value", "label": "Valor", "default": "San Pedro Tlaquepaque" }
+    ] }
+  ],
+  "max_blocks": 4,
+  "presets": [{ "name": "El Trece: portada" }]
+}
+{% endschema %}

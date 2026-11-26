@@ -1,0 +1,115 @@
+{%- comment -%}
+  Ficha de cata (estilo del catálogo El Trece): datos clave con íconos, vista / olfato / gusto y maridaje.
+  Lee metafields del producto en el namespace "vino": origen, uva, crianza, temperatura, alcohol,
+  vista, olfato, gusto, maridaje (un platillo por renglón), acento (color hex de la etiqueta).
+  Si existe assets/et-ficha-{handle}.jpg se ofrece la ficha completa del catálogo.
+{%- endcomment -%}
+{%- assign v = product.metafields.vino -%}
+{%- assign fichas = 'sauvignon-blanc,rose,syrah,nebbiolo,cabernet-sauvignon,moscato,petite-sirah' | split: ',' -%}
+{%- if v.vista != blank or v.olfato != blank or v.gusto != blank or v.maridaje != blank or v.uva != blank -%}
+{%- assign accent = v.acento | default: '#c9a35c' -%}
+<section class="et-sec et-sec--ink et-cata" style="--acc: {{ accent }};" id="ficha-de-cata">
+  <div class="et-wrap">
+    <header class="et-cata__head et-reveal">
+      <p class="et-eyebrow">{{ section.settings.eyebrow }}</p>
+      <h2 class="et-h2">{{ product.title }}</h2>
+      {%- render 'et-ornament', class: 'et-cata__orn' -%}
+    </header>
+
+    <dl class="et-cata__facts et-reveal" style="--i:1">
+      {%- if v.origen != blank -%}<div><dt><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M12 21s-6.5-6.2-6.5-11a6.5 6.5 0 0 1 13 0c0 4.8-6.5 11-6.5 11z"/><circle cx="12" cy="10" r="2.4"/></svg>Origen</dt><dd>{{ v.origen }}</dd></div>{%- endif -%}
+      {%- if v.uva != blank -%}<div><dt><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><circle cx="9" cy="10" r="2.2"/><circle cx="15" cy="10" r="2.2"/><circle cx="12" cy="14" r="2.2"/><circle cx="9" cy="18" r="2"/><circle cx="15" cy="18" r="2"/><path d="M12 7.8V3m0 2c1.5-1.6 3.5-1.8 5-1"/></svg>Uva</dt><dd>{{ v.uva }}</dd></div>{%- endif -%}
+      {%- if v.crianza != blank -%}<div><dt><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><ellipse cx="12" cy="12" rx="6.5" ry="8.5"/><path d="M5.7 8h12.6M5.7 16h12.6M9.5 3.8v16.4M14.5 3.8v16.4"/></svg>Crianza</dt><dd>{{ v.crianza }}</dd></div>{%- endif -%}
+      {%- if v.temperatura != blank -%}<div><dt><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M10 14.5V5a2 2 0 0 1 4 0v9.5a4 4 0 1 1-4 0z"/><circle cx="12" cy="17.5" r="1.6" fill="currentColor"/></svg>Servicio</dt><dd>{{ v.temperatura }}</dd></div>{%- endif -%}
+      {%- if v.alcohol != blank -%}<div><dt><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M7 3h10l-1 7a4 4 0 0 1-8 0zM12 14v6m-4 1h8"/></svg>Alcohol</dt><dd>{{ v.alcohol }}</dd></div>{%- endif -%}
+    </dl>
+
+    <div class="et-cata__senses">
+      {%- if v.vista != blank -%}
+      <article class="et-reveal" style="--i:1"><svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 24s7.5-12 20-12 20 12 20 12-7.5 12-20 12S4 24 4 24z"/><circle cx="24" cy="24" r="6.5"/><circle cx="24" cy="24" r="2" fill="currentColor"/></svg><h3>A nivel visual</h3><p>{{ v.vista }}</p></article>
+      {%- endif -%}
+      {%- if v.olfato != blank -%}
+      <article class="et-reveal" style="--i:2"><svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M25 6c-3 8-9 17-9 24 0 4 3 7 7 7 2 0 3-1 4-2m1-29c1 6 4 13 5 19"/><path d="M18 37c-2 0-4 1-4 3m14-3c2 0 4 1 4 3"/></svg><h3>A nivel olfativo</h3><p>{{ v.olfato }}</p></article>
+      {%- endif -%}
+      {%- if v.gusto != blank -%}
+      <article class="et-reveal" style="--i:3"><svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M5 24c4-6 9-9 13-9 3 0 4 2 6 2s3-2 6-2c4 0 9 3 13 9-5 7-11 10-19 10S10 31 5 24z"/><path d="M5 24c8 2 30 2 38 0"/></svg><h3>A nivel gustativo</h3><p>{{ v.gusto }}</p></article>
+      {%- endif -%}
+    </div>
+
+    {%- if v.maridaje != blank -%}
+    <div class="et-cata__pair et-reveal">
+      <h3 class="et-cata__pairh"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M7 3v8m-2.5-8v5a2.5 2.5 0 0 0 5 0V3M7 11v10M17 21V3c-2 1-3.5 4-3.5 8h3.5"/></svg>Maridaje</h3>
+      <ul>
+        {%- assign platos = v.maridaje | newline_to_br | split: '<br />' -%}
+        {%- for p in platos -%}{%- assign t = p | strip -%}{%- if t != blank -%}<li>{{ t }}</li>{%- endif -%}{%- endfor -%}
+      </ul>
+    </div>
+    {%- endif -%}
+
+    {%- if fichas contains product.handle -%}
+      {%- assign ficha = 'et-ficha-' | append: product.handle | append: '.jpg' -%}
+      <div class="et-cata__more et-reveal">
+        <button type="button" class="et-btn" data-et-ficha-open>Ver ficha de cata completa</button>
+        <dialog class="et-cata__dialog" data-et-ficha>
+          <button type="button" class="et-cata__close" data-et-ficha-close aria-label="Cerrar">×</button>
+          <img src="{{ ficha | asset_url }}" alt="Ficha de cata de {{ product.title | escape }}" loading="lazy" width="1024" height="1536">
+        </dialog>
+      </div>
+    {%- endif -%}
+    <p class="et-cata__legal">{{ section.settings.legal }}</p>
+  </div>
+</section>
+<script>
+  (() => {
+    const root = document.currentScript.previousElementSibling;
+    const d = root && root.querySelector('[data-et-ficha]');
+    if (!d) return;
+    root.querySelector('[data-et-ficha-open]').addEventListener('click', () => d.showModal());
+    d.querySelector('[data-et-ficha-close]').addEventListener('click', () => d.close());
+    d.addEventListener('click', (e) => { if (e.target === d) d.close(); });
+  })();
+</script>
+{%- endif -%}
+{% stylesheet %}
+  .et-cata { padding-block: clamp(64px, 9vw, 120px); }
+  .et-cata__head { text-align: center; display: grid; justify-items: center; }
+  .et-cata__head .et-eyebrow { color: var(--acc, var(--et-gold)); opacity: 1; }
+  .et-orn { display: inline-flex; align-items: center; gap: 12px; color: var(--acc, var(--et-gold)); margin-top: 18px; }
+  .et-orn i { width: clamp(48px, 8vw, 110px); height: 1px; background: currentColor; opacity: .6; }
+  .et-orn svg { width: 18px; height: 18px; }
+  .et-cata__facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); margin: clamp(36px, 5vw, 56px) 0 0; border-block: 1px solid color-mix(in srgb, var(--et-gold) 30%, transparent); }
+  .et-cata__facts > div { padding: 20px 18px; text-align: center; }
+  .et-cata__facts > div + div { border-left: 1px solid color-mix(in srgb, var(--et-gold) 22%, transparent); }
+  .et-cata__facts dt { display: grid; justify-items: center; gap: 10px; font-family: var(--et-sans); text-transform: uppercase; letter-spacing: .2em; font-size: .66rem; color: var(--et-gold); }
+  .et-cata__facts dt svg { width: 28px; height: 28px; }
+  .et-cata__facts dd { margin: 8px 0 0; font-family: var(--et-serif); font-size: 1.02rem; line-height: 1.45; }
+  .et-cata__senses { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: clamp(28px, 4vw, 56px); margin-top: clamp(44px, 6vw, 72px); }
+  .et-cata__senses article { position: relative; padding-top: 4px; }
+  .et-cata__senses svg { width: 44px; height: 44px; color: var(--acc, var(--et-gold)); }
+  .et-cata__senses h3 { font-family: var(--et-sans); text-transform: uppercase; letter-spacing: .18em; font-size: .78rem; font-weight: 600; color: var(--et-gold); margin: 16px 0 10px; }
+  .et-cata__senses p { margin: 0; font-family: var(--et-sans); line-height: 1.75; opacity: .88; }
+  .et-cata__pair { margin-top: clamp(44px, 6vw, 72px); padding-top: clamp(28px, 4vw, 40px); border-top: 1px solid color-mix(in srgb, var(--et-gold) 30%, transparent); text-align: center; }
+  .et-cata__pairh { display: inline-flex; align-items: center; gap: 10px; font-family: var(--et-serif); font-weight: 400; font-size: clamp(1.5rem, 2.6vw, 2rem); color: var(--et-gold); margin: 0 0 22px; }
+  .et-cata__pairh svg { width: 26px; height: 26px; }
+  .et-cata__pair ul { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; }
+  .et-cata__pair li { padding: 10px 18px; border: 1px solid color-mix(in srgb, var(--acc, var(--et-gold)) 55%, transparent); border-radius: 999px; font-family: var(--et-sans); font-size: .9rem; transition: background-color .3s var(--et-ease), color .3s var(--et-ease); }
+  .et-cata__pair li:hover { background: var(--acc, var(--et-gold)); color: var(--et-ink); }
+  .et-cata__more { margin-top: 36px; text-align: center; }
+  .et-cata__dialog { padding: 0; border: 0; background: transparent; max-width: min(92vw, 640px); max-height: 92vh; overflow: auto; }
+  .et-cata__dialog::backdrop { background: rgba(21,17,14,.82); }
+  .et-cata__dialog img { display: block; width: 100%; height: auto; }
+  .et-cata__close { position: sticky; top: 8px; float: right; margin: 8px; width: 40px; height: 40px; border-radius: 50%; border: 0; background: var(--et-ink); color: var(--et-cream); font-size: 1.4rem; cursor: pointer; }
+  .et-cata__legal { margin: 40px 0 0; text-align: center; font-size: .74rem; letter-spacing: .08em; opacity: .55; }
+  @media (max-width: 749px) { .et-cata__facts > div + div { border-left: 0; border-top: 1px solid color-mix(in srgb, var(--et-gold) 22%, transparent); } }
+{% endstylesheet %}
+{% schema %}
+{
+  "name": "El Trece: ficha de cata",
+  "enabled_on": { "templates": ["product"] },
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Antetítulo", "default": "Guion de cata" },
+    { "type": "text", "id": "legal", "label": "Leyenda", "default": "EVITE EL EXCESO. Venta exclusiva a mayores de 18 años." }
+  ],
+  "presets": [{ "name": "El Trece: ficha de cata" }]
+}
+{% endschema %}

@@ -1,0 +1,68 @@
+{
+  "sections": {
+    "donde": {
+      "type": "et-stockists",
+      "blocks": {
+        "s1": {
+          "type": "socio",
+          "settings": {
+            "name": "La Vizcaína",
+            "kind": "Eventos y cristalería",
+            "city": "Guadalajara",
+            "address": "",
+            "map_query": "La Vizcaína eventos cristalería Guadalajara Jalisco",
+            "anchor": "la-vizcaina"
+          }
+        },
+        "s2": {
+          "type": "socio",
+          "settings": {
+            "name": "Serenzzo Hotel & Cuisine",
+            "kind": "Hotel boutique",
+            "city": "Tapalpa, Jalisco",
+            "address": "Juan Gil Preciado 68",
+            "map_query": "Serenzzo Hotel Tapalpa Jalisco",
+            "url": "https://serenzzo.com/",
+            "instagram": "https://www.instagram.com/serenzzo/",
+            "anchor": "serenzzo-hotel-cuisine"
+          }
+        },
+        "s3": {
+          "type": "socio",
+          "settings": {
+            "name": "Encanto Fuego & Mar",
+            "kind": "Restaurante",
+            "city": "Polanco, Ciudad de México",
+            "address": "Av. Presidente Masaryk 123 B",
+            "map_query": "Encanto Fuego y Mar Av. Presidente Masaryk 123 B Polanco CDMX",
+            "url": "https://encantofuegoymar.com/",
+            "anchor": "encanto-fuego-mar"
+          }
+        },
+        "s4": {
+          "type": "socio",
+          "settings": {
+            "name": "El Río Country Club",
+            "kind": "Campo de golf",
+            "city": "El Arenal, Jalisco",
+            "address": "",
+            "map_query": "El Río Country Club El Arenal Jalisco",
+            "instagram": "https://www.instagram.com/elriocc/",
+            "facebook": "https://www.facebook.com/elriocc/",
+            "anchor": "el-rio-country-club"
+          }
+        }
+      },
+      "block_order": [
+        "s1",
+        "s2",
+        "s3",
+        "s4"
+      ],
+      "settings": {}
+    }
+  },
+  "order": [
+    "donde"
+  ]
+}

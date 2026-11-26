@@ -1,0 +1,31 @@
+{%- comment -%}
+  Emblema El Trece (recreación vectorial del logotipo de Instagram: "13", "El Trece" en cursiva, anillo dorado).
+  variant: 'emblem' (círculo completo) | 'header' (sello pequeño + nombre en línea)
+  Sustituir por el archivo original del logotipo cuando la bodega lo comparta.
+{%- endcomment -%}
+{%- assign v = variant | default: 'emblem' -%}
+{%- if v == 'header' -%}
+  <span class="et-logo et-logo--header">
+    <svg class="et-logo__seal" viewBox="0 0 64 64" aria-hidden="true" focusable="false">
+      <circle cx="32" cy="32" r="30" fill="none" stroke="currentColor" stroke-width="1.2"/>
+      <circle cx="32" cy="32" r="26.5" fill="none" stroke="currentColor" stroke-width=".5" opacity=".55"/>
+      <text x="32" y="41" text-anchor="middle" fill="currentColor" style="font-family: var(--et-serif); font-size: 25px; letter-spacing: -1px;">13</text>
+    </svg>
+    <span class="et-logo__word">el trece<small>·mp</small></span>
+    <span class="visually-hidden">{{ shop.name }}</span>
+  </span>
+{%- else -%}
+  <svg class="et-logo et-logo--emblem" viewBox="0 0 200 200" role="img" aria-label="Bodega El Trece · vinos de autor">
+    <circle cx="100" cy="100" r="96" fill="none" stroke="currentColor" stroke-width="1.6"/>
+    <circle cx="100" cy="100" r="91" fill="none" stroke="currentColor" stroke-width=".5" opacity=".5"/>
+    <text x="72" y="66" text-anchor="middle" fill="currentColor" style="font-family: var(--et-serif); font-size: 10px;">20</text>
+    <text x="100" y="72" text-anchor="middle" fill="currentColor" style="font-family: var(--et-serif); font-size: 36px; font-weight: 600; letter-spacing: -3px;">13</text>
+    <text x="128" y="66" text-anchor="middle" fill="currentColor" style="font-family: var(--et-serif); font-size: 10px;">25</text>
+    <text x="100" y="112" text-anchor="middle" fill="currentColor" style="font-family: var(--et-serif); font-size: 36px; letter-spacing: -.5px;">el trece</text>
+    <text x="150" y="124" text-anchor="middle" fill="currentColor" style="font-family: var(--et-serif); font-size: 10px;">·mp</text>
+    <path d="M58 132h34M108 132h34" stroke="currentColor" stroke-width=".6"/>
+    <path d="M100 127c-1.6 1.6-1.6 3.4 0 5 1.6-1.6 1.6-3.4 0-5zM96 131.5l4 1.6 4-1.6-1.2 3h-5.6z" fill="currentColor"/>
+    <text x="100" y="150" text-anchor="middle" fill="currentColor" style="font-family: var(--et-sans); font-size: 7.5px; letter-spacing: 3px;">VINOS DE AUTOR</text>
+    <text x="100" y="166" text-anchor="middle" fill="currentColor" opacity=".8" style="font-family: var(--et-serif); font-size: 6px; letter-spacing: 1px;">NACIDO EN VALLE · DE CORAZÓN EN TLAQUEPAQUE</text>
+  </svg>
+{%- endif -%}

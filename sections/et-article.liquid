@@ -1,0 +1,46 @@
+{%- comment -%} Artículo del Diario: portada a sangre, lectura cómoda y artículos relacionados. {%- endcomment -%}
+<article class="et-art">
+  <header class="et-art__hero">
+    {%- if article.image -%}
+      <div class="et-art__media">{{ article.image | image_url: width: 2200 | image_tag: loading: 'eager', fetchpriority: 'high', sizes: '100vw', widths: '800, 1200, 1600, 2200', alt: article.image.alt | default: article.title }}</div>
+    {%- endif -%}
+    <div class="et-wrap et-art__headin">
+      <p class="et-eyebrow"><a href="{{ blog.url }}">{{ blog.title }}</a>{% if article.tags.size > 0 %} · {{ article.tags.first }}{% endif %}</p>
+      <h1 class="et-art__title">{{ article.title }}</h1>
+      <p class="et-art__meta">{{ article.published_at | date: '%d · %m · %Y' }} · {{ article.content | strip_html | split: ' ' | size | divided_by: 200 | plus: 1 }} min de lectura</p>
+    </div>
+  </header>
+  <div class="et-sec et-sec--paper et-art__wrap">
+    {%- render 'et-botanic', kind: 'branch', class: 'et-art__vine' -%}
+    <div class="et-art__body et-prose">{{ article.content }}</div>
+    <div class="et-art__end">
+      {%- render 'et-botanic', kind: 'sprig', class: 'et-art__sprig' -%}
+      <a class="et-btn et-btn--solid" href="{{ routes.collections_url }}/vinos">Conoce los vinos El Trece</a>
+      <a class="et-link" href="{{ blog.url }}">Volver al Diario</a>
+    </div>
+  </div>
+</article>
+{% stylesheet %}
+  .et-art__hero { position: relative; min-height: 78svh; display: grid; align-items: end; color: var(--et-cream); background: var(--et-ink); overflow: hidden; margin-inline: var(--et-frame); border-radius: 0 0 var(--et-radius-lg) var(--et-radius-lg); isolation: isolate; }
+  .et-art__media { position: absolute; inset: 0; z-index: -1; }
+  .et-art__media img { width: 100%; height: 100%; object-fit: cover; }
+  .et-art__media::after { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(21,17,14,.5), rgba(21,17,14,.1) 35%, rgba(21,17,14,.88)); }
+  .et-art__headin { padding-block: 160px 56px; max-width: 980px; }
+  .et-art__headin .et-eyebrow a { color: var(--et-gold); text-decoration: none; }
+  .et-art__title { font-family: var(--et-serif); font-weight: 400; font-size: clamp(2.4rem, 5.6vw, 4.6rem); line-height: 1.02; margin: 0; text-wrap: balance; }
+  .et-art__meta { font-family: var(--et-sans); font-size: .76rem; letter-spacing: .16em; text-transform: uppercase; opacity: .75; margin: 22px 0 0; }
+  .et-art__wrap { padding-inline: var(--et-gutter); }
+  .et-art__vine { position: absolute; left: -60px; top: 60px; width: 360px; color: var(--et-gold); opacity: .45; }
+  .et-art__body { max-width: 68ch; margin-inline: auto; font-size: 1.08rem; line-height: 1.85; position: relative; }
+  .et-art__body h2, .et-art__body h3 { font-family: var(--et-serif); font-weight: 400; line-height: 1.2; margin: 2em 0 .6em; }
+  .et-art__body h2 { font-size: 1.9rem; }
+  .et-art__body > p:first-child::first-letter { font-family: var(--et-serif); float: left; font-size: 4.4em; line-height: .82; padding: .06em .12em 0 0; color: var(--et-wine); }
+  .et-art__body blockquote { margin: 2em 0; padding: 0 0 0 1.4em; font-family: var(--et-serif); font-style: italic; font-size: 1.4rem; line-height: 1.45; border: 0; position: relative; }
+  .et-art__body blockquote::before { content: '“'; position: absolute; left: -.2em; top: -.35em; font-size: 3em; color: var(--et-gold); line-height: 1; }
+  .et-art__body ul { padding-left: 1.2em; } .et-art__body li { margin-bottom: .5em; } .et-art__body li::marker { color: var(--et-gold-deep); }
+  .et-art__end { max-width: 68ch; margin: 72px auto 0; display: grid; justify-items: center; gap: 22px; text-align: center; }
+  .et-art__sprig { width: 160px; color: var(--et-gold-deep); }
+{% endstylesheet %}
+{% schema %}
+{ "name": "El Trece: artículo" }
+{% endschema %}

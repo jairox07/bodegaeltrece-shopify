@@ -1,0 +1,64 @@
+{%- comment -%} Historia de la bodega: foto a la izquierda, relato a la derecha, con trazo botánico. {%- endcomment -%}
+{%- assign s = section.settings -%}
+<section class="et-sec et-sec--paper et-story">
+  <div class="et-wrap et-story__in{% if s.flip %} et-story__in--flip{% endif %}">
+    <figure class="et-story__media et-reveal">
+      {%- if s.image != blank -%}
+        {{ s.image | image_url: width: 1400 | image_tag: loading: 'lazy', sizes: '(min-width: 990px) 560px, 100vw', widths: '600, 900, 1200, 1400' }}
+      {%- else -%}
+        <img src="{{ 'et-hero.jpg' | asset_url }}" alt="Bodega El Trece" loading="lazy" width="1600" height="1067">
+      {%- endif -%}
+      {%- render 'et-botanic', kind: 'cluster', class: 'et-story__cluster' -%}
+    </figure>
+    <div class="et-story__copy">
+      <svg class="et-story__vine" viewBox="0 0 200 200" aria-hidden="true" fill="none" stroke="currentColor" stroke-width=".8" stroke-linecap="round">
+        <path d="M10 190C40 150 60 120 70 80s30-60 70-70"/>
+        <path d="M70 80c-18-4-30-16-34-34 18 2 32 14 34 34z"/>
+        <path d="M92 52c4-16 18-28 36-30-2 18-16 30-36 30z"/>
+        <path d="M54 124c-20 2-36-6-46-22 20-4 38 4 46 22z"/>
+        <circle cx="118" cy="70" r="5"/><circle cx="128" cy="78" r="5"/><circle cx="114" cy="82" r="5"/><circle cx="124" cy="90" r="5"/><circle cx="120" cy="100" r="5"/>
+        <path d="M108 60c6 4 12 6 18 4"/>
+      </svg>
+      {%- if s.eyebrow != blank -%}<p class="et-eyebrow et-reveal">{{ s.eyebrow }}</p>{%- endif -%}
+      <h2 class="et-h2 et-reveal" style="--i:1">{{ s.title }}</h2>
+      <hr class="et-rule et-reveal" style="--i:1">
+      <div class="et-prose et-reveal" style="--i:2">{{ s.text }}</div>
+      {%- if s.button != blank -%}<a class="et-btn et-btn--solid et-reveal" style="--i:3" href="{{ s.button_url | default: '#' }}">{{ s.button }}</a>{%- endif -%}
+    </div>
+  </div>
+</section>
+{% stylesheet %}
+  .et-story__in { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); gap: clamp(32px, 6vw, 96px); align-items: center; }
+  .et-story__in--flip .et-story__media { order: 2; }
+  .et-story__media { margin: 0; position: relative; isolation: isolate; }
+  .et-story__cluster { position: absolute; right: -34px; top: -56px; width: clamp(80px, 9vw, 128px); color: var(--et-gold-deep); z-index: 2; }
+  .et-story__media img { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; display: block; filter: saturate(.92) contrast(1.03); }
+  .et-story__media::after { content: ''; position: absolute; inset: 14px -14px -14px 14px; border: 1px solid var(--et-gold); z-index: -1; }
+  .et-story__copy { position: relative; }
+  .et-story__copy .et-btn { margin-top: 32px; }
+  .et-story__vine { position: absolute; width: clamp(110px, 14vw, 180px); right: -12px; top: -40px; color: var(--et-gold-deep); opacity: .55; pointer-events: none; }
+  @media (max-width: 749px) {
+    .et-story__in { grid-template-columns: 1fr; }
+    .et-story__in--flip .et-story__media { order: 0; }
+    .et-story__media::after { inset: 10px -10px -10px 10px; }
+    .et-story__copy { text-align: center; }
+    .et-story__copy .et-rule { margin-inline: auto; }
+    .et-story__copy .et-prose { margin-inline: auto; }
+    .et-story__vine { top: -20px; right: 0; width: 90px; }
+  }
+{% endstylesheet %}
+{% schema %}
+{
+  "name": "El Trece: historia",
+  "settings": [
+    { "type": "image_picker", "id": "image", "label": "Foto" },
+    { "type": "checkbox", "id": "flip", "label": "Foto a la derecha", "default": false },
+    { "type": "text", "id": "eyebrow", "label": "Antetítulo", "default": "Nuestra historia" },
+    { "type": "text", "id": "title", "label": "Título", "default": "Una fecha que se volvió legado." },
+    { "type": "richtext", "id": "text", "label": "Texto", "default": "<p>El Trece nace como homenaje a la llegada de María Paula, quien dio nombre y sentido a este proyecto. Su esencia se construye desde el amor, el respeto por la tierra y la paciencia que exige el vino.</p><p>Cada botella celebra su origen en el Valle de Santo Tomás y agradece a quienes hicieron posible el camino. Más que un vino, un recuerdo compartido.</p>" },
+    { "type": "text", "id": "button", "label": "Botón", "default": "Conocer la bodega" },
+    { "type": "url", "id": "button_url", "label": "Liga del botón" }
+  ],
+  "presets": [{ "name": "El Trece: historia" }]
+}
+{% endschema %}

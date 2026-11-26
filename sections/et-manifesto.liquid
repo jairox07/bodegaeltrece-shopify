@@ -1,0 +1,101 @@
+{%- comment -%} Manifiesto: palabra gigante de fondo, foto inclinada al centro, firma y sello. {%- endcomment -%}
+{%- assign s = section.settings -%}
+<section class="et-sec et-sec--paper et-mani" aria-labelledby="EtMani-{{ section.id }}">
+  <p class="et-mani__ghost et-mani__ghost--top" aria-hidden="true">{{ s.ghost_top }}</p>
+  <p class="et-mani__ghost et-mani__ghost--bottom" aria-hidden="true">{{ s.ghost_bottom }}</p>
+
+  <div class="et-wrap et-mani__in">
+    <div class="et-mani__col et-mani__col--left et-reveal">
+      {%- if s.eyebrow != blank -%}<p class="et-eyebrow">{{ s.eyebrow }}</p>{%- endif -%}
+      <h2 class="et-mani__title" id="EtMani-{{ section.id }}">{{ s.title }}</h2>
+      <div class="et-prose">{{ s.text_left }}</div>
+    </div>
+
+    <div class="et-mani__stage">
+      {%- render 'et-botanic', kind: 'branch', class: 'et-mani__bot et-mani__bot--a' -%}
+      {%- render 'et-botanic', kind: 'branch', class: 'et-mani__bot et-mani__bot--b' -%}
+      {%- render 'et-botanic', kind: 'cluster', class: 'et-mani__bot et-mani__bot--c' -%}
+      {%- render 'et-botanic', kind: 'leaf', class: 'et-mani__bot et-mani__bot--d' -%}
+    <figure class="et-mani__frame et-reveal" style="--i:1">
+      {%- if s.image != blank -%}
+        {{ s.image | image_url: width: 1100 | image_tag: loading: 'lazy', sizes: '(min-width: 990px) 380px, 70vw', widths: '500, 800, 1100' }}
+      {%- elsif all_products['legado'].featured_image -%}
+        {{ all_products['legado'].featured_image | image_url: width: 1100 | image_tag: loading: 'lazy', sizes: '(min-width: 990px) 380px, 70vw', widths: '500, 800, 1100', alt: 'El Trece Legado' }}
+      {%- else -%}
+        <div class="et-mani__placeholder">{%- render 'et-bottle', label: 'El Trece', kind: 'tinto' -%}</div>
+      {%- endif -%}
+      <span class="et-mani__seal" aria-hidden="true">{%- render 'et-logo', variant: 'header' -%}</span>
+    </figure>
+    </div>
+
+    <div class="et-mani__col et-mani__col--right et-reveal" style="--i:2">
+      <p class="et-mani__sign" aria-hidden="true">{{ s.signature }}</p>
+      {%- render 'et-botanic', kind: 'sprig', class: 'et-mani__sprig' -%}
+      <ul class="et-mani__facts">
+        {%- for block in section.blocks -%}
+          <li {{ block.shopify_attributes }}><span>{{ block.settings.label }}</span><b>{{ block.settings.value }}</b></li>
+        {%- endfor -%}
+      </ul>
+    </div>
+  </div>
+</section>
+{% stylesheet %}
+  .et-mani { padding-block: clamp(88px, 12vw, 168px); }
+  .et-mani__ghost { position: absolute; left: 0; right: 0; margin: 0; font-family: var(--et-serif); font-weight: 400; line-height: .8; white-space: nowrap; letter-spacing: -.02em; color: var(--et-ink); opacity: .06; pointer-events: none; user-select: none; text-transform: uppercase; }
+  .et-mani__ghost--top { top: clamp(24px, 4vw, 56px); font-size: clamp(5rem, 17vw, 15rem); padding-left: 2vw; }
+  .et-mani__ghost--bottom { bottom: clamp(20px, 3vw, 40px); font-size: clamp(3.5rem, 10vw, 9rem); text-align: right; padding-right: 2vw; }
+  .et-mani__in { position: relative; display: grid; grid-template-columns: 1fr minmax(240px, 380px) 1fr; gap: clamp(28px, 5vw, 72px); align-items: center; }
+  .et-mani__title { font-family: var(--et-serif); font-weight: 400; font-size: clamp(1.7rem, 2.6vw, 2.3rem); line-height: 1.12; margin: 0 0 18px; text-wrap: balance; }
+  .et-mani__col--left .et-prose { font-size: .95rem; }
+  .et-mani__frame { margin: 0; position: relative; transform: rotate(-4deg); transition: transform 1.2s var(--et-ease); }
+  .et-mani__frame:hover { transform: rotate(-1.5deg); }
+  .et-mani__frame img, .et-mani__placeholder { width: 100%; aspect-ratio: 3 / 4.2; object-fit: cover; display: block; border-radius: 999px 999px 4px 4px; box-shadow: 0 40px 60px -30px rgba(21,17,14,.55); }
+  .et-mani__placeholder { background: radial-gradient(circle at 50% 30%, #2b211b, var(--et-ink)); display: grid; place-items: end center; padding: 18% 22% 6%; box-sizing: border-box; }
+  .et-mani__seal { position: absolute; right: -22px; bottom: 16%; width: 88px; height: 88px; border-radius: 50%; background: radial-gradient(circle at 35% 30%, #8a2a37, var(--et-wine) 60%, #3f1017); box-shadow: inset 0 0 0 6px rgba(0,0,0,.12), 0 10px 22px -8px rgba(60,10,20,.6); display: grid; place-items: center; rotate: 8deg; color: #f0d6c4; }
+  .et-mani__seal .et-logo__word, .et-mani__seal .visually-hidden { display: none; }
+  .et-mani__seal .et-logo__seal { width: 62px; height: 62px; }
+  .et-mani__stage { position: relative; display: grid; place-items: center; }
+  .et-mani__bot { position: absolute; color: var(--et-gold-deep); pointer-events: none; }
+  .et-mani__bot--a { width: 150%; left: -70%; bottom: 4%; rotate: -16deg; }
+  .et-mani__bot--b { width: 130%; right: -62%; top: 2%; rotate: 164deg; }
+  .et-mani__bot--c { width: 30%; left: -22%; top: 6%; rotate: -10deg; }
+  .et-mani__bot--d { width: 26%; right: -16%; bottom: -4%; rotate: 28deg; }
+  .et-mani__sprig { width: 150px; color: var(--et-gold-deep); margin: -10px 0 26px; }
+  
+  .et-mani__sign { font-family: var(--et-serif); font-style: italic; font-size: clamp(2.6rem, 5vw, 4.4rem); line-height: 1; color: var(--et-wine); margin: 0 0 28px; transform: rotate(-6deg); transform-origin: left center; }
+  .et-mani__facts { list-style: none; margin: 0; padding: 0; display: grid; }
+  .et-mani__facts li { display: grid; gap: 4px; padding-block: 14px; border-top: 1px solid var(--et-line); }
+  .et-mani__facts li:last-child { border-bottom: 1px solid var(--et-line); }
+  .et-mani__facts span { font-family: var(--et-sans); font-size: .66rem; letter-spacing: .2em; text-transform: uppercase; opacity: .6; }
+  .et-mani__facts b { font-family: var(--et-serif); font-weight: 400; font-size: 1.1rem; }
+  @media (max-width: 989px) {
+    .et-mani__in { grid-template-columns: 1fr; justify-items: center; text-align: center; }
+    .et-mani__stage { order: -1; } .et-mani__frame { width: min(70vw, 320px); } .et-mani__bot--a, .et-mani__bot--b { width: 120%; } .et-mani__sprig { margin-inline: auto; }
+    .et-mani__col { max-width: 520px; }
+    .et-mani__col .et-prose { margin-inline: auto; }
+    .et-mani__sign { transform: rotate(-4deg); transform-origin: center; }
+    .et-mani__facts { text-align: left; }
+  }
+{% endstylesheet %}
+{% schema %}
+{
+  "name": "El Trece: manifiesto",
+  "settings": [
+    { "type": "text", "id": "ghost_top", "label": "Palabra de fondo (arriba)", "default": "El Trece" },
+    { "type": "text", "id": "ghost_bottom", "label": "Palabra de fondo (abajo)", "default": "Santo Tomás" },
+    { "type": "image_picker", "id": "image", "label": "Foto central (vertical)" },
+    { "type": "text", "id": "eyebrow", "label": "Antetítulo", "default": "Vino con raíz" },
+    { "type": "text", "id": "title", "label": "Título", "default": "Hay vinos que se beben, y hay vinos que se sienten." },
+    { "type": "richtext", "id": "text_left", "label": "Texto", "default": "<p>Lotes pequeños, fermentaciones cuidadas y la brisa del Pacífico en cada copa. Vinos pensados para detener el momento y hacerlo memorable.</p>" },
+    { "type": "text", "id": "signature", "label": "Firma", "default": "El Trece" }
+  ],
+  "blocks": [
+    { "type": "dato", "name": "Dato", "settings": [
+      { "type": "text", "id": "label", "label": "Etiqueta", "default": "Origen" },
+      { "type": "text", "id": "value", "label": "Valor", "default": "Valle de Santo Tomás, B.C." }
+    ] }
+  ],
+  "max_blocks": 4,
+  "presets": [{ "name": "El Trece: manifiesto" }]
+}
+{% endschema %}

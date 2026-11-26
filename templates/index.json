@@ -1,0 +1,331 @@
+{
+  "sections": {
+    "temporada": {
+      "type": "et-season-bar",
+      "settings": {
+        "bg": "#15110E",
+        "fg": "#EDE6D6"
+      }
+    },
+    "portada": {
+      "type": "et-hero",
+      "settings": {
+        "image": "shopify://shop_images/et-hero-valle.jpg",
+        "height": 100,
+        "focal": "center bottom",
+        "cta1_url": "shopify://collections/vinos",
+        "cta2_url": "#cotizar"
+      },
+      "blocks": {},
+      "block_order": []
+    },
+    "vinos": {
+      "type": "et-wine-rail",
+      "settings": {
+        "collection": "vinos",
+        "eyebrow": "La colección",
+        "title": "Nuestros vinos"
+      }
+    },
+    "historia": {
+      "type": "et-origin",
+      "settings": {
+        "image": "shopify://shop_images/et-barricas.jpg",
+        "button": "Ver los vinos",
+        "button_url": "shopify://collections/vinos"
+      }
+    },
+    "manifiesto": {
+      "type": "et-manifesto",
+      "settings": {},
+      "blocks": {
+        "d1": {
+          "type": "dato",
+          "settings": {
+            "label": "Origen",
+            "value": "Valle de Santo Tomás, Ensenada"
+          }
+        },
+        "d2": {
+          "type": "dato",
+          "settings": {
+            "label": "Enología",
+            "value": "Laura Chiappella"
+          }
+        },
+        "d3": {
+          "type": "dato",
+          "settings": {
+            "label": "Casa",
+            "value": "San Pedro Tlaquepaque, Jalisco"
+          }
+        }
+      },
+      "block_order": [
+        "d1",
+        "d2",
+        "d3"
+      ]
+    },
+    "cotizador": {
+      "type": "et-corporate-quote",
+      "settings": {}
+    },
+    "catas": {
+      "type": "et-catas",
+      "settings": {
+        "button_url": "/pages/restaurantes",
+        "image": "shopify://shop_images/et-cosecha.jpg"
+      },
+      "blocks": {
+        "q1": {
+          "type": "frase",
+          "settings": {
+            "quote": "Hay vinos que se beben, y hay vinos que se sienten.",
+            "author": "El Trece"
+          }
+        },
+        "q2": {
+          "type": "frase",
+          "settings": {
+            "quote": "Hay vinos que invitan a hacer una pausa. Cuánto puede contar un vino cuando nos detenemos a escucharlo.",
+            "author": "El Trece · Nebbiolo Gran Reserva"
+          }
+        },
+        "q3": {
+          "type": "frase",
+          "settings": {
+            "quote": "El vino en la copa, el fuego en la parrilla y una buena conversación.",
+            "author": "El Trece · cata y maridaje"
+          }
+        }
+      },
+      "block_order": [
+        "q1",
+        "q2",
+        "q3"
+      ]
+    },
+    "club": {
+      "type": "et-club",
+      "settings": {
+        "image": "shopify://shop_images/et-cava.jpg"
+      }
+    },
+    "cinta": {
+      "type": "et-marquee",
+      "settings": {}
+    },
+    "diario": {
+      "type": "et-journal",
+      "settings": {
+        "blog": "diario"
+      }
+    },
+    "preguntas": {
+      "type": "et-faq",
+      "settings": {},
+      "blocks": {
+        "q0": {
+          "type": "q",
+          "settings": {
+            "q": "¿Necesito ser mayor de edad para comprar?",
+            "a": "<p>Sí. La venta de bebidas alcohólicas es solo para mayores de 18 años. Al recibir tu pedido podemos pedir una identificación oficial.</p>"
+          }
+        },
+        "q1": {
+          "type": "q",
+          "settings": {
+            "q": "¿A dónde entregan?",
+            "a": "<p>Por ahora entregamos en la Zona Metropolitana de Guadalajara. Si estás en otra ciudad, escríbenos por el chat y vemos opciones.</p>"
+          }
+        },
+        "q2": {
+          "type": "q",
+          "settings": {
+            "q": "¿Hacen regalos corporativos personalizados?",
+            "a": "<p>Sí. Armamos cajas de 3 o 6 botellas con tarjeta personalizada. Usa el cotizador de la página principal o la sección Empresas para pedir tu propuesta.</p>"
+          }
+        },
+        "q3": {
+          "type": "q",
+          "settings": {
+            "q": "¿Cómo conservo el vino en casa?",
+            "a": "<p>Guarda las botellas acostadas, lejos de la luz directa y en un lugar fresco y estable, idealmente entre 12 y 16 °C.</p>"
+          }
+        },
+        "q4": {
+          "type": "q",
+          "settings": {
+            "q": "¿A qué temperatura sirvo cada vino?",
+            "a": "<p>Como referencia general: blancos y rosados frescos, alrededor de 8 a 12 °C; tintos ligeros, 14 a 16 °C; tintos con cuerpo, 16 a 18 °C.</p>"
+          }
+        },
+        "q5": {
+          "type": "q",
+          "settings": {
+            "q": "¿Venden a restaurantes y tiendas?",
+            "a": "<p>Sí. En la sección Restaurantes puedes dejarnos tus datos y te compartimos la lista de precios para negocio.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "q0",
+        "q1",
+        "q2",
+        "q3",
+        "q4",
+        "q5"
+      ]
+    },
+    "maridaje": {
+      "type": "et-pairing",
+      "blocks": {
+        "plato1": {
+          "type": "plato",
+          "settings": {
+            "dish": "Carnes y cortes",
+            "note": "Carnes rojas a la parrilla, guisos de cordero o res.",
+            "products": [
+              "cabernet-sauvignon",
+              "syrah",
+              "nebbiolo"
+            ]
+          }
+        },
+        "plato2": {
+          "type": "plato",
+          "settings": {
+            "dish": "Mariscos y pescado",
+            "note": "Ostiones, camarón, atún fresco o carpaccio.",
+            "products": [
+              "sauvignon-blanc",
+              "rose"
+            ]
+          }
+        },
+        "plato3": {
+          "type": "plato",
+          "settings": {
+            "dish": "Pastas y risottos",
+            "note": "Salsas robustas, pesto o risotto de hongos.",
+            "products": [
+              "nebbiolo",
+              "cabernet-sauvignon",
+              "sauvignon-blanc"
+            ]
+          }
+        },
+        "plato4": {
+          "type": "plato",
+          "settings": {
+            "dish": "Quesos y charcutería",
+            "note": "De quesos frescos de cabra a maduros y azules.",
+            "products": [
+              "syrah",
+              "rose",
+              "moscato"
+            ]
+          }
+        },
+        "plato5": {
+          "type": "plato",
+          "settings": {
+            "dish": "Postres y sobremesa",
+            "note": "Crème brûlée, frutos rojos, chocolate amargo, café o habano.",
+            "products": [
+              "moscato",
+              "petite-sirah"
+            ]
+          }
+        }
+      },
+      "block_order": [
+        "plato1",
+        "plato2",
+        "plato3",
+        "plato4",
+        "plato5"
+      ],
+      "settings": {}
+    },
+    "frases": {
+      "type": "et-voices",
+      "blocks": {
+        "v1": {
+          "type": "frase",
+          "settings": {
+            "quote": "Rojo granate, taninos sedosos y un largo final de boca que invita a seguir tomando.",
+            "author": "Cabernet Sauvignon",
+            "role": "Ficha de cata · El Trece",
+            "link": "/products/cabernet-sauvignon",
+            "link_label": "Comprar Cabernet Sauvignon"
+          }
+        },
+        "v2": {
+          "type": "frase",
+          "settings": {
+            "quote": "Firme y sobrio, de gran cuerpo, con notas de chocolate oscuro, café y frutas negras maduras.",
+            "author": "Syrah",
+            "role": "Ficha de cata · El Trece",
+            "link": "/products/syrah",
+            "link_label": "Comprar Syrah"
+          }
+        },
+        "v3": {
+          "type": "frase",
+          "settings": {
+            "quote": "Fresco y suave, con durazno, frambuesa y un delicado toque de jazmín que invita a otro sorbo.",
+            "author": "Pinot Noir Rosado",
+            "role": "Ficha de cata · El Trece",
+            "link": "/products/rose",
+            "link_label": "Comprar Rosado"
+          }
+        },
+        "v4": {
+          "type": "frase",
+          "settings": {
+            "quote": "Fresco y vibrante: cítricos y hierbas, con un final limpio, mineral y muy refrescante.",
+            "author": "Sauvignon Blanc",
+            "role": "Ficha de cata · El Trece",
+            "link": "/products/sauvignon-blanc",
+            "link_label": "Comprar Sauvignon Blanc"
+          }
+        },
+        "v5": {
+          "type": "frase",
+          "settings": {
+            "quote": "Lo que yo quería era justo el gusto por compartir la mesa entre seres queridos.",
+            "author": "Héctor Medina",
+            "role": "Creador de La Bodega El Trece",
+            "link": "/collections/vinos",
+            "link_label": "Ver todos los vinos"
+          }
+        }
+      },
+      "block_order": [
+        "v1",
+        "v2",
+        "v3",
+        "v4",
+        "v5"
+      ],
+      "settings": {}
+    }
+  },
+  "order": [
+    "temporada",
+    "portada",
+    "cinta",
+    "vinos",
+    "maridaje",
+    "historia",
+    "manifiesto",
+    "cotizador",
+    "catas",
+    "diario",
+    "preguntas",
+    "club",
+    "frases"
+  ]
+}

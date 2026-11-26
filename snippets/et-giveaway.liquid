@@ -1,0 +1,125 @@
+{%- comment -%}
+  Pop-up del giveaway VinArt 6 (Ajijic). Sale después de la verificación de edad, una vez por visitante.
+  Los registros llegan como contacto con etiqueta "giveaway-vinart". Para apagarlo: ajustes del tema > et_giveaway_on,
+  o borra el render en layout/theme.liquid. Termina el 15 de nov.
+{%- endcomment -%}
+{%- assign gw_now = 'now' | date: '%s' | plus: 0 -%}
+{%- if gw_now < 1794808800 -%}
+<div class="et-gw" id="EtGiveaway" role="dialog" aria-modal="true" aria-labelledby="EtGwTitle" hidden>
+  <div class="et-gw__backdrop" data-et-gw-close></div>
+  <div class="et-gw__card">
+    <button type="button" class="et-gw__x" data-et-gw-close aria-label="Cerrar">&times;</button>
+    <div class="et-gw__media">
+      <img class="et-gw__img" src="{{ 'et-giveaway.jpg' | asset_url }}" alt="Giveaway Bodega El Trece: gana un pase doble para VinArt 6 Ajijic, 14 o 15 de noviembre" width="989" height="1400" loading="lazy">
+      <p class="et-gw__cap">¿Vas a VinArt? Puedes ganarte un pase doble haciendo esto en Instagram: sigue a <b>@eltrecemp</b>, dale like a la publicación y cuéntanos con quién irías.</p>
+    </div>
+    <div class="et-gw__side">
+      <p class="et-gw__eyebrow">Giveaway · VinArt 6 Ajijic</p>
+      <h2 class="et-gw__title" id="EtGwTitle">Gana un pase doble</h2>
+      <p class="et-gw__lead">Regístrate y participa por dos entradas para un solo día, 14 o 15 de noviembre, a elección del ganador.</p>
+      {%- form 'contact', id: 'EtGwForm', class: 'et-gw__form' -%}
+        <input type="hidden" name="contact[tags]" value="giveaway-vinart">
+        <label for="EtGwName">Nombre</label>
+        <input id="EtGwName" name="contact[name]" autocomplete="name" required>
+        <label for="EtGwTel">Teléfono (WhatsApp)</label>
+        <input id="EtGwTel" type="tel" name="contact[phone]" autocomplete="tel" pattern="[0-9 +()\-]{10,18}" required>
+        <label for="EtGwMail">Correo</label>
+        <input id="EtGwMail" type="email" name="contact[email]" autocomplete="email" required>
+        <label for="EtGwWhy">¿Con quién irías a VinArt y por qué?</label>
+        <textarea id="EtGwWhy" name="contact[body]" rows="2"></textarea>
+        <button type="submit" class="et-gw__btn">Quiero participar</button>
+        <p class="et-gw__err" hidden>No pudimos enviar tu registro. Intenta de nuevo.</p>
+        <p class="et-gw__fine">Participan mayores de 18 años. Usaremos tus datos solo para este giveaway y para avisarte si ganas.</p>
+      {%- endform -%}
+      <div class="et-gw__ok" hidden>
+        <h3>Ya estás participando</h3>
+        <p>Gracias. Te contactaremos por WhatsApp o correo si resultas ganador. Mucha suerte.</p>
+        <button type="button" class="et-gw__btn" data-et-gw-close>Ver la tienda</button>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+  (function () {
+    var el = document.getElementById('EtGiveaway');
+    if (!el) return;
+    var KEY = 'et_gw_vinart_v1', root = document.documentElement;
+    if ({{ request.design_mode | json }} || /[?&]giveaway=0/.test(location.search)) { el.remove(); return; }
+    var seen = false;
+    try { seen = document.cookie.indexOf(KEY + '=1') > -1; } catch (e) {}
+    if (seen && !/[?&]giveaway=1/.test(location.search)) { el.remove(); return; }
+    var last = null;
+    function open() {
+      el.hidden = false;
+      requestAnimationFrame(function () { el.classList.add('is-on'); });
+      root.classList.add('et-gw-lock');
+      last = document.activeElement;
+      var f = el.querySelector('input:not([type=hidden])'); if (f) setTimeout(function () { try { f.focus({ preventScroll: true }); } catch (e) {} }, 350);
+    }
+    function close() {
+      try { document.cookie = KEY + '=1; max-age=' + 60 * 60 * 24 * 14 + '; path=/; SameSite=Lax'; } catch (e) {}
+      el.classList.remove('is-on');
+      root.classList.remove('et-gw-lock');
+      setTimeout(function () { el.hidden = true; }, 350);
+      if (last && last.focus) try { last.focus({ preventScroll: true }); } catch (e) {}
+    }
+    el.addEventListener('click', function (e) { if (e.target.closest('[data-et-gw-close]')) close(); });
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && !el.hidden) close(); });
+    var form = el.querySelector('form'), err = el.querySelector('.et-gw__err'), ok = el.querySelector('.et-gw__ok');
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      err.hidden = true;
+      var b = form.querySelector('button[type=submit]'); b.disabled = true; b.textContent = 'Enviando…';
+      fetch(form.action, { method: 'POST', body: new FormData(form), credentials: 'same-origin' })
+        .then(function (r) {
+          if (!r.ok || !/contact_posted=true/.test(r.url)) throw new Error('x');
+          form.hidden = true; ok.hidden = false;
+          el.querySelector('.et-gw__lead').hidden = true;
+          try { document.cookie = KEY + '=1; max-age=' + 60 * 60 * 24 * 60 + '; path=/; SameSite=Lax'; } catch (e) {}
+        })
+        .catch(function () { err.hidden = false; b.disabled = false; b.textContent = 'Quiero participar'; });
+    });
+    // Espera a que la verificación de edad termine antes de mostrar el pop-up.
+    var t = setInterval(function () {
+      if (document.getElementById('EtAgeGate')) return;
+      clearInterval(t); setTimeout(open, 1200);
+    }, 400);
+  })();
+</script>
+<style>
+  .et-gw-lock, .et-gw-lock body { overflow: hidden; }
+  .et-gw { position: fixed; inset: 0; z-index: 2147482000; display: grid; place-items: center; padding: 16px; opacity: 0; transition: opacity .35s ease; }
+  .et-gw[hidden] { display: none; }
+  .et-gw.is-on { opacity: 1; }
+  .et-gw__backdrop { position: absolute; inset: 0; background: rgba(11,9,7,.78); }
+  .et-gw__card { position: relative; display: grid; grid-template-columns: minmax(0, 0.9fr) minmax(0, 1fr); width: min(940px, 100%); max-height: calc(100dvh - 32px); background: #EDE6D6; color: #15110E; border-radius: 6px; overflow: hidden; box-shadow: 0 40px 90px -30px rgba(0,0,0,.7); transform: translateY(14px) scale(.98); transition: transform .45s cubic-bezier(.2,.7,.2,1); }
+  .et-gw.is-on .et-gw__card { transform: none; }
+  .et-gw__media { display: flex; flex-direction: column; min-height: 0; background: #15110E; }
+  .et-gw__img { width: 100%; flex: 1 1 auto; min-height: 0; object-fit: cover; display: block; }
+  .et-gw__cap { margin: 0; padding: 12px 16px 14px; color: #EDE6D6; font-size: .82rem; line-height: 1.45; text-align: center; }
+  .et-gw__cap b { color: #C9A35C; font-weight: 600; letter-spacing: .02em; }
+  .et-gw__side { padding: clamp(22px, 3vw, 38px); overflow-y: auto; display: flex; flex-direction: column; justify-content: center; }
+  .et-gw__eyebrow { margin: 0 0 8px; color: #8c6a2e; text-transform: uppercase; letter-spacing: .18em; font-size: .7rem; font-weight: 600; }
+  .et-gw__title { margin: 0 0 10px; font-family: var(--font-heading--family, 'Playfair Display', Georgia, serif); font-weight: 400; font-size: clamp(1.6rem, 3vw, 2.2rem); line-height: 1.1; }
+  .et-gw__lead { margin: 0 0 14px; font-size: .92rem; line-height: 1.5; color: rgba(21,17,14,.8); }
+  .et-gw__form { display: grid; gap: 4px; }
+  .et-gw__form label { color: #6b5228; text-transform: uppercase; letter-spacing: .1em; font-size: .68rem; font-weight: 600; margin-top: 8px; }
+  .et-gw__form input, .et-gw__form textarea { width: 100%; box-sizing: border-box; padding: 11px 13px; border: 1px solid rgba(21,17,14,.25); border-radius: 4px; background: #fff; color: #15110E; font: inherit; font-size: 16px; }
+  .et-gw__form input:focus, .et-gw__form textarea:focus { outline: 2px solid #C9A35C; outline-offset: 1px; }
+  .et-gw__btn { margin-top: 14px; min-height: 48px; padding: 0 26px; border: 0; border-radius: 4px; background: #15110E; color: #EDE6D6; font: 600 .76rem/1 var(--font-body--family, sans-serif); letter-spacing: .16em; text-transform: uppercase; cursor: pointer; transition: background-color .3s; }
+  .et-gw__btn:hover { background: #8c6a2e; }
+  .et-gw__btn:disabled { opacity: .6; cursor: wait; }
+  .et-gw__err { margin: 8px 0 0; color: #9b2c2c; font-size: .85rem; }
+  .et-gw__fine { margin: 10px 0 0; font-size: .68rem; line-height: 1.4; color: rgba(21,17,14,.6); }
+  .et-gw__ok h3 { margin: 0 0 8px; font-family: var(--font-heading--family, Georgia, serif); font-weight: 400; font-size: 1.5rem; }
+  .et-gw__ok p { margin: 0; line-height: 1.5; }
+  .et-gw__x { position: absolute; top: 8px; right: 10px; z-index: 2; width: 40px; height: 40px; border: 0; border-radius: 50%; background: rgba(21,17,14,.72); color: #EDE6D6; font-size: 1.5rem; line-height: 1; cursor: pointer; }
+  .et-gw__x:hover { background: #8c6a2e; }
+  @media (max-width: 749px) {
+    .et-gw__card { grid-template-columns: 1fr; overflow-y: auto; }
+    .et-gw__img { height: auto; max-height: 38dvh; flex: none; object-position: center top; }
+    .et-gw__side { overflow: visible; }
+  }
+  @media (prefers-reduced-motion: reduce) { .et-gw, .et-gw__card { transition: none; } }
+</style>
+{%- endif -%}

@@ -1,0 +1,39 @@
+{
+  "sections": {
+    "restaurantes": {
+      "type": "et-trade-form",
+      "blocks": {
+        "beneficio_1": {
+          "type": "beneficio",
+          "settings": {
+            "label": "Copa",
+            "text": "Precio de mayoreo pensado para servir por copa, con margen para tu carta."
+          }
+        },
+        "beneficio_2": {
+          "type": "beneficio",
+          "settings": {
+            "label": "Cata",
+            "text": "Una cata guiada para tu equipo de piso."
+          }
+        },
+        "beneficio_3": {
+          "type": "beneficio",
+          "settings": {
+            "label": "Evento",
+            "text": "Noche de maridaje co-promocionada en nuestras redes y las tuyas."
+          }
+        }
+      },
+      "block_order": [
+        "beneficio_1",
+        "beneficio_2",
+        "beneficio_3"
+      ],
+      "settings": {}
+    }
+  },
+  "order": [
+    "restaurantes"
+  ]
+}

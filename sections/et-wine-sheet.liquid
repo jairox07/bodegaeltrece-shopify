@@ -1,0 +1,37 @@
+{%- comment -%} Ficha técnica del vino. Lee metafields vino.* del producto; oculta los vacíos. {%- endcomment -%}
+{%- assign v = product.metafields.vino -%}
+{%- if v.uva != blank or v.cosecha != blank or v.alcohol != blank or v.maridaje != blank -%}
+<section class="et-sheet page-width">
+  <h2 class="et-h2 et-sheet__title">{{ section.settings.title }}</h2>
+  <dl class="et-sheet__grid">
+    {%- if v.uva != blank -%}<div><dt>Uva</dt><dd>{{ v.uva }}</dd></div>{%- endif -%}
+    {%- if v.cosecha != blank -%}<div><dt>Cosecha</dt><dd>{{ v.cosecha }}</dd></div>{%- endif -%}
+    {%- if v.alcohol != blank -%}<div><dt>Alcohol</dt><dd>{{ v.alcohol }}% Alc. Vol.</dd></div>{%- endif -%}
+    {%- if v.barrica_meses != blank -%}<div><dt>Barrica</dt><dd>{{ v.barrica_meses }} meses</dd></div>{%- endif -%}
+    {%- if v.temperatura != blank -%}<div><dt>Servir a</dt><dd>{{ v.temperatura }}</dd></div>{%- endif -%}
+    {%- if v.maridaje != blank -%}<div class="et-sheet__wide"><dt>Maridaje</dt><dd>{{ v.maridaje }}</dd></div>{%- endif -%}
+  </dl>
+  <p class="et-sheet__legal">{{ section.settings.legal }}</p>
+</section>
+{%- endif -%}
+{% stylesheet %}
+  .et-sheet { padding-block: clamp(40px, 6vw, 80px); }
+  .et-sheet__title { font-size: clamp(1.6rem, 3vw, 2.2rem); margin-bottom: 24px; }
+  .et-sheet__grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 0; margin: 0; border-top: 1px solid color-mix(in srgb, currentColor 14%, transparent); }
+  .et-sheet__grid > div { padding: 16px 16px 16px 0; border-bottom: 1px solid color-mix(in srgb, currentColor 14%, transparent); }
+  .et-sheet__wide { grid-column: 1 / -1; }
+  .et-sheet dt { text-transform: uppercase; letter-spacing: .1em; font-size: .72rem; opacity: .6; }
+  .et-sheet dd { margin: 4px 0 0; font-size: 1.05rem; }
+  .et-sheet__legal { margin-top: 20px; font-size: .8rem; opacity: .6; }
+{% endstylesheet %}
+{% schema %}
+{
+  "name": "El Trece: ficha del vino",
+  "enabled_on": { "templates": ["product"] },
+  "settings": [
+    { "type": "text", "id": "title", "label": "Título", "default": "Ficha técnica" },
+    { "type": "text", "id": "legal", "label": "Leyenda", "default": "EVITE EL EXCESO. Venta exclusiva a mayores de 18 años." }
+  ],
+  "presets": [{ "name": "El Trece: ficha del vino" }]
+}
+{% endschema %}

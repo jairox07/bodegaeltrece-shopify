@@ -1,0 +1,15 @@
+{%- comment -%} Foto de botella del catálogo (assets/et-vino-{handle}.jpg) o, si no existe, la foto del producto. {%- endcomment -%}
+{%- assign cat = 'sauvignon-blanc,rose,syrah,nebbiolo,cabernet-sauvignon,moscato,petite-sirah' | split: ',' -%}
+{%- if cat contains p.handle -%}
+  {%- assign f = 'et-vino-' | append: p.handle | append: '.jpg' -%}
+  {%- case p.handle -%}
+    {%- when 'cabernet-sauvignon' -%}{%- assign pos = '46%' -%}
+    {%- when 'moscato' -%}{%- assign pos = '84%' -%}
+    {%- when 'nebbiolo' -%}{%- assign pos = '92%' -%}
+    {%- when 'petite-sirah' -%}{%- assign pos = '82%' -%}
+    {%- else -%}{%- assign pos = '96%' -%}
+  {%- endcase -%}
+  <img src="{{ f | asset_url }}" style="object-position: center {{ pos }};" alt="{{ p.title | escape }}" loading="lazy" width="400" height="1000" class="et-wine-img">
+{%- elsif p.featured_media -%}
+  {{ p.featured_media | image_url: width: 900 | image_tag: loading: 'lazy', sizes: sizes, widths: '400, 600, 900', alt: p.title }}
+{%- endif -%}

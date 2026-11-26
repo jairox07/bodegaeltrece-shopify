@@ -1,0 +1,66 @@
+{
+  "sections": {
+    "faq": {
+      "type": "et-faq",
+      "settings": {
+        "page_top": true,
+        "title": "Preguntas frecuentes"
+      },
+      "blocks": {
+        "q0": {
+          "type": "q",
+          "settings": {
+            "q": "¿Necesito ser mayor de edad para comprar?",
+            "a": "<p>Sí. La venta de bebidas alcohólicas es solo para mayores de 18 años. Al recibir tu pedido podemos pedir una identificación oficial.</p>"
+          }
+        },
+        "q1": {
+          "type": "q",
+          "settings": {
+            "q": "¿A dónde entregan?",
+            "a": "<p>Por ahora entregamos en la Zona Metropolitana de Guadalajara. Si estás en otra ciudad, escríbenos por el chat y vemos opciones.</p>"
+          }
+        },
+        "q2": {
+          "type": "q",
+          "settings": {
+            "q": "¿Hacen regalos corporativos personalizados?",
+            "a": "<p>Sí. Armamos cajas de 3 o 6 botellas con tarjeta personalizada. Usa el cotizador de la página principal o la sección Empresas para pedir tu propuesta.</p>"
+          }
+        },
+        "q3": {
+          "type": "q",
+          "settings": {
+            "q": "¿Cómo conservo el vino en casa?",
+            "a": "<p>Guarda las botellas acostadas, lejos de la luz directa y en un lugar fresco y estable, idealmente entre 12 y 16 °C.</p>"
+          }
+        },
+        "q4": {
+          "type": "q",
+          "settings": {
+            "q": "¿A qué temperatura sirvo cada vino?",
+            "a": "<p>Como referencia general: blancos y rosados frescos, alrededor de 8 a 12 °C; tintos ligeros, 14 a 16 °C; tintos con cuerpo, 16 a 18 °C.</p>"
+          }
+        },
+        "q5": {
+          "type": "q",
+          "settings": {
+            "q": "¿Venden a restaurantes y tiendas?",
+            "a": "<p>Sí. En la sección Restaurantes puedes dejarnos tus datos y te compartimos la lista de precios para negocio.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "q0",
+        "q1",
+        "q2",
+        "q3",
+        "q4",
+        "q5"
+      ]
+    }
+  },
+  "order": [
+    "faq"
+  ]
+}

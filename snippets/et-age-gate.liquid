@@ -1,0 +1,61 @@
+{%- comment -%}
+  Verificación de edad a pantalla completa. Cortinilla negra con el logotipo; al confirmar, dos compuertas
+  se abren desde el centro (una hacia arriba y otra hacia abajo) y se desvanecen. Se recuerda 30 días.
+{%- endcomment -%}
+<div class="et-age" id="EtAgeGate" role="dialog" aria-modal="true" aria-labelledby="EtAgeTitle">
+  <div class="et-age__door et-age__door--top" aria-hidden="true"></div>
+  <div class="et-age__door et-age__door--bot" aria-hidden="true"></div>
+  <div class="et-age__seam" aria-hidden="true"></div>
+  <div class="et-age__in">
+    <img class="et-age__logo" src="{{ 'et-logo-oro.png' | asset_url }}" alt="La Bodega El Trece" width="900" height="493">
+    <p class="et-age__eyebrow">Bienvenido a la casa</p>
+    <h2 class="et-age__title" id="EtAgeTitle">{{ settings.et_age_text | default: '¿Eres mayor de 18 años?' }}</h2>
+    <div class="et-age__actions">
+      <button type="button" class="et-age__yes" data-et-age="yes">Sí, soy mayor de edad</button>
+      <a class="et-age__no" href="https://www.gob.mx/salud" rel="nofollow">No, salir</a>
+    </div>
+    <p class="et-age__legal">Evita el exceso · Venta solo a mayores de 18 años</p>
+  </div>
+</div>
+<script>
+  (function () {
+    var el = document.getElementById('EtAgeGate'), root = document.documentElement, ok = false;
+    try { ok = document.cookie.indexOf('et_age_v2=1') > -1; } catch (e) {}
+    if (ok || {{ request.design_mode | json }}) { el.remove(); return; }
+    root.classList.add('et-age-lock');
+    var btn = el.querySelector('[data-et-age="yes"]');
+    setTimeout(function () { try { btn.focus({ preventScroll: true }); } catch (e) {} }, 400);
+    btn.addEventListener('click', function () {
+      try { document.cookie = 'et_age_v2=1; max-age=' + 60 * 60 * 24 * 30 + '; path=/; SameSite=Lax'; } catch (e) {}
+      el.classList.add('is-open');
+      root.classList.remove('et-age-lock');
+      var done = function () { el.remove(); };
+      if (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) return done();
+      setTimeout(done, 1900);
+    });
+  })();
+</script>
+<style>
+  .et-age-lock, .et-age-lock body { overflow: hidden; }
+  .et-age { position: fixed; inset: 0; z-index: 2147483000; display: grid; place-items: center; color: #ede6d6; }
+  .et-age__door { position: absolute; left: 0; right: 0; height: 50.5%; background: radial-gradient(80% 120% at 50% 100%, #221a14, #0b0907 70%); transition: transform 1.25s cubic-bezier(.77,0,.18,1) .35s, opacity .7s ease 1.1s; }
+  .et-age__door--top { top: 0; }
+  .et-age__door--bot { bottom: 0; background: radial-gradient(80% 120% at 50% 0%, #221a14, #0b0907 70%); }
+  .et-age__seam { position: absolute; left: 0; right: 0; top: 50%; height: 1px; background: linear-gradient(90deg, transparent, #c9a35c 30%, #c9a35c 70%, transparent); opacity: .55; transform: scaleX(.35); transition: transform .5s ease, opacity .4s ease .5s; }
+  .et-age__in { position: relative; text-align: center; padding: 24px; max-width: 520px; transition: opacity .45s ease, transform .6s ease; }
+  .et-age__logo { width: clamp(220px, 32vw, 340px); height: auto; display: block; margin: 0 auto 26px; filter: drop-shadow(0 20px 40px rgba(0,0,0,.6)); }
+  .et-age__eyebrow { margin: 0 0 10px; color: #c9a35c; text-transform: uppercase; letter-spacing: .28em; font-size: .7rem; }
+  .et-age__title { margin: 0 0 28px; font-family: var(--font-heading--family, 'Playfair Display', Georgia, serif); font-weight: 400; font-size: clamp(1.8rem, 4vw, 2.6rem); line-height: 1.15; color: #f5f0e6; }
+  .et-age__actions { display: flex; flex-wrap: wrap; gap: 14px; justify-content: center; align-items: center; }
+  .et-age__yes { min-height: 50px; padding: 0 30px; border: 1px solid #c9a35c; background: #c9a35c; color: #15110e; font: 600 .76rem/1 var(--font-body--family, sans-serif); letter-spacing: .2em; text-transform: uppercase; cursor: pointer; transition: background-color .3s, color .3s; }
+  .et-age__yes:hover { background: transparent; color: #c9a35c; }
+  .et-age__yes:focus-visible, .et-age__no:focus-visible { outline: 2px solid #f5f0e6; outline-offset: 3px; }
+  .et-age__no { color: rgba(237,230,214,.7); font-size: .8rem; letter-spacing: .14em; text-transform: uppercase; text-underline-offset: 5px; }
+  .et-age__legal { margin: 30px 0 0; font-size: .68rem; letter-spacing: .16em; text-transform: uppercase; color: rgba(237,230,214,.45); }
+  .et-age.is-open { pointer-events: none; }
+  .et-age.is-open .et-age__in { opacity: 0; transform: scale(.96); }
+  .et-age.is-open .et-age__seam { transform: scaleX(1); opacity: 0; }
+  .et-age.is-open .et-age__door--top { transform: translateY(-100%); opacity: 0; }
+  .et-age.is-open .et-age__door--bot { transform: translateY(100%); opacity: 0; }
+  @media (prefers-reduced-motion: reduce) { .et-age__door, .et-age__in, .et-age__seam { transition: none; } }
+</style>

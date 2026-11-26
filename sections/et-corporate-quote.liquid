@@ -1,0 +1,164 @@
+{%- comment -%}
+  Cotizador para empresas. Calcula en el navegador y envía la solicitud con el formulario de contacto de Shopify
+  (llega al correo de la tienda y queda en Clientes con la etiqueta "empresa").
+{%- endcomment -%}
+{%- assign s = section.settings -%}
+<section class="et-quote" id="cotizar">
+  <div class="page-width et-quote__in">
+    <div class="et-quote__config">
+      {%- if s.eyebrow != blank -%}<p class="et-eyebrow">{{ s.eyebrow }}</p>{%- endif -%}
+      <h2 class="et-h2">{{ s.title }}</h2>
+      {%- if s.text != blank -%}<div class="et-quote__text">{{ s.text }}</div>{%- endif -%}
+      <ul class="et-quote__perks" aria-label="Incluye">
+        <li>Tarjeta con tu logo</li><li>Cajas de regalo</li><li>Descuento por volumen</li>
+      </ul>
+
+      <fieldset class="et-field et-card">
+        <legend>Tipo de caja</legend>
+        <div class="et-choices">
+          <label class="et-choice"><input type="radio" name="et-caja" value="2" data-price="{{ s.price_2 }}"><b>2 botellas</b><span>{{ s.price_2 | times: 100 | money_without_trailing_zeros }} por caja</span></label>
+          <label class="et-choice"><input type="radio" name="et-caja" value="3" data-price="{{ s.price_3 }}" checked><b>3 botellas</b><span>{{ s.price_3 | times: 100 | money_without_trailing_zeros }} por caja</span></label>
+          <label class="et-choice"><input type="radio" name="et-caja" value="6" data-price="{{ s.price_6 }}"><b>6 botellas</b><span>{{ s.price_6 | times: 100 | money_without_trailing_zeros }} por caja</span></label>
+        </div>
+      </fieldset>
+
+      <div class="et-field et-card">
+        <label for="EtQty-{{ section.id }}">Número de cajas</label>
+        <div class="et-qty">
+          <input type="range" min="{{ s.min_qty }}" max="200" value="25" data-et-range aria-label="Número de cajas">
+          <input type="number" id="EtQty-{{ section.id }}" min="{{ s.min_qty }}" max="1000" value="25" data-et-qty>
+        </div>
+        <p class="et-help">{{ s.tiers_label }}</p>
+      </div>
+
+      <label class="et-check et-card"><input type="checkbox" data-et-logo checked> Tarjeta personalizada con logo y mensaje ({{ s.logo_price | times: 100 | money_without_trailing_zeros }} por caja)</label>
+    </div>
+
+    <aside class="et-quote__panel" aria-live="polite">
+      <p class="et-eyebrow">Tu cotización</p>
+      <div class="et-row"><span>Precio por caja</span><span data-out="unit">$0</span></div>
+      <div class="et-row"><span>Cajas</span><span data-out="qty">0</span></div>
+      <div class="et-row"><span>Descuento por volumen</span><span data-out="disc">0%</span></div>
+      <div class="et-row"><span>Tarjeta personalizada</span><span data-out="logo">$0</span></div>
+      <div class="et-total"><span>Total estimado</span><b data-out="total">$0</b></div>
+      <p class="et-help"><span data-out="bottles">0</span> botellas · {{ s.tax_note }}</p>
+
+      {%- form 'contact', id: 'EtQuoteForm', class: 'et-form' -%}
+        {%- if form.posted_successfully? -%}
+          <p class="et-ok">{{ s.success }}</p>
+        {%- else -%}
+          {%- if form.errors -%}<p class="et-err">Revisa los datos: {{ form.errors | default_errors }}</p>{%- endif -%}
+          <input type="hidden" name="contact[tags]" value="empresa,cotizacion-navidad">
+          <input type="hidden" name="contact[Cotización]" data-et-summary>
+          <label for="EtEmp">Empresa</label>
+          <input id="EtEmp" name="contact[Empresa]" autocomplete="organization" required>
+          <label for="EtName">Tu nombre</label>
+          <input id="EtName" name="contact[name]" autocomplete="name" required>
+          <label for="EtEmail">Correo</label>
+          <input id="EtEmail" type="email" name="contact[email]" autocomplete="email" required>
+          <label for="EtTel">WhatsApp</label>
+          <input id="EtTel" type="tel" name="contact[phone]" autocomplete="tel" pattern="[0-9 +]{10,16}" required>
+          <label class="et-check et-check--small"><input type="checkbox" required> Acepto el <a href="{{ s.privacy_url | default: '/policies/privacy-policy' }}">aviso de privacidad</a></label>
+          <button type="submit" class="et-btn et-btn--solid">Solicitar cotización formal</button>
+        {%- endif -%}
+      {%- endform -%}
+    </aside>
+  </div>
+</section>
+<script>
+  (function () {
+    var root = document.getElementById('cotizar'); if (!root) return;
+    var tiers = [[{{ s.tier3_min }}, {{ s.tier3_pct }}], [{{ s.tier2_min }}, {{ s.tier2_pct }}], [{{ s.tier1_min }}, {{ s.tier1_pct }}]];
+    var logoPrice = {{ s.logo_price }}, min = {{ s.min_qty }};
+    var fmt = function (n) { return '$' + Math.round(n).toLocaleString('es-MX'); };
+    var q = root.querySelector('[data-et-qty]'), r = root.querySelector('[data-et-range]'), lg = root.querySelector('[data-et-logo]');
+    function out(k, v) { var el = root.querySelector('[data-out="' + k + '"]'); if (el) el.textContent = v; }
+    function calc() {
+      var n = Math.max(min, parseInt(q.value, 10) || min);
+      var c = root.querySelector('input[name="et-caja"]:checked');
+      var price = parseFloat(c.dataset.price), units = parseInt(c.value, 10), d = 0;
+      for (var i = 0; i < tiers.length; i++) { if (n >= tiers[i][0]) { d = tiers[i][1] / 100; break; } }
+      var unit = price * (1 - d), logo = lg.checked ? logoPrice * n : 0, total = unit * n + logo;
+      out('unit', fmt(unit)); out('qty', n); out('disc', Math.round(d * 100) + '%'); out('logo', fmt(logo)); out('total', fmt(total)); out('bottles', n * units);
+      var sum = root.querySelector('[data-et-summary]');
+      if (sum) sum.value = n + ' cajas de ' + units + ' botellas, descuento ' + Math.round(d * 100) + '%, tarjeta: ' + (lg.checked ? 'sí' : 'no') + ', total estimado ' + fmt(total);
+    }
+    r.addEventListener('input', function () { q.value = r.value; calc(); });
+    q.addEventListener('input', function () { if (+q.value >= min && +q.value <= 200) r.value = q.value; calc(); });
+    lg.addEventListener('change', calc);
+    root.querySelectorAll('input[name="et-caja"]').forEach(function (x) { x.addEventListener('change', calc); });
+    calc();
+  })();
+</script>
+{% stylesheet %}
+  section.et-quote { position: relative; overflow: clip; isolation: isolate; color: #ede6d6; padding-block: clamp(72px, 9vw, 128px);
+    background: radial-gradient(55% 45% at 0% 0%, rgba(201,163,92,.22), transparent 70%), radial-gradient(50% 50% at 100% 100%, rgba(107,30,41,.55), transparent 70%), linear-gradient(180deg, #15110e, #1d1612 60%, #15110e);
+    border-block: 1px solid rgba(201,163,92,.5); }
+  section.et-quote::before { content: ''; position: absolute; inset: 14px; border: 1px solid rgba(201,163,92,.22); pointer-events: none; z-index: -1; }
+  section.et-quote .et-eyebrow { color: #c9a35c; opacity: 1; }
+  section.et-quote .et-h2 { color: #f5f0e6; font-size: clamp(2.2rem, 4.4vw, 3.6rem); max-width: 16ch; }
+  .et-quote__in { display: grid; grid-template-columns: 1.1fr .9fr; gap: clamp(24px, 4vw, 64px); align-items: start; }
+  .et-quote__text { margin: 18px 0 20px; color: rgba(237,230,214,.85); max-width: 52ch; line-height: 1.7; }
+  .et-quote__perks { list-style: none; display: flex; flex-wrap: wrap; gap: 10px; margin: 0 0 32px; padding: 0; }
+  .et-quote__perks li { border: 1px solid rgba(201,163,92,.55); color: #c9a35c; border-radius: 999px; padding: 7px 16px; font-size: .72rem; letter-spacing: .14em; text-transform: uppercase; }
+  .et-field { border: 0; padding: 0; margin: 0 0 18px; }
+  .et-card { background: rgba(237,230,214,.05); border: 1px solid rgba(201,163,92,.28); border-radius: 4px; padding: 22px; box-sizing: border-box; min-inline-size: 0; }
+  .et-field legend, .et-field > label { font-family: var(--et-serif); font-size: 1.15rem; color: #f5f0e6; margin-bottom: 14px; display: block; padding: 0; }
+  .et-choices { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+  .et-choice { position: relative; border: 1px solid rgba(237,230,214,.3); background: rgba(21,17,14,.6); color: #ede6d6; border-radius: 4px; padding: 16px 14px; display: grid; gap: 4px; cursor: pointer; transition: border-color .25s, background-color .25s, transform .25s; }
+  .et-choice:hover { border-color: #c9a35c; transform: translateY(-2px); }
+  .et-choice input { position: absolute; opacity: 0; }
+  .et-choice:has(input:checked) { border-color: #c9a35c; background: rgba(201,163,92,.2); box-shadow: inset 0 0 0 1px #c9a35c; }
+  .et-choice:has(input:focus-visible) { outline: 2px solid #c9a35c; outline-offset: 2px; }
+  .et-choice b { font-family: var(--et-serif); font-size: 1.3rem; font-weight: 400; color: #f5f0e6; }
+  .et-choice span { font-size: .85rem; color: #c9a35c; font-variant-numeric: tabular-nums; }
+  .et-help { color: rgba(237,230,214,.7); font-size: .85rem; margin: 10px 0 0; }
+  .et-qty { display: flex; gap: 14px; align-items: center; }
+  .et-qty input[type=range] { flex: 1; accent-color: #c9a35c; }
+  .et-quote .et-qty input[type=number] { width: 96px; padding: 10px; background: #15110e; color: #f5f0e6; border: 1px solid #c9a35c; border-radius: 4px; font: inherit; text-align: center; }
+  .et-check { display: flex; gap: 12px; align-items: center; cursor: pointer; color: #ede6d6; }
+  .et-check input { accent-color: #c9a35c; width: 18px; height: 18px; }
+  .et-check--small { font-size: .85rem; background: none; border: 0; padding: 0; color: #15110e; }
+  .et-quote__panel { background: #f5f0e6; color: #15110e; border-radius: 4px; border-top: 5px solid #c9a35c; padding: clamp(24px, 3.4vw, 40px); position: sticky; top: 96px; box-shadow: 0 40px 80px -30px rgba(0,0,0,.75); }
+  .et-quote__panel .et-eyebrow { color: #8c6a2e; }
+  .et-quote__panel .et-help { color: #5a4a36; }
+  .et-row { display: flex; justify-content: space-between; gap: 12px; padding-block: 10px; border-bottom: 1px dashed rgba(21,17,14,.25); }
+  .et-row span:last-child, .et-total b { font-variant-numeric: tabular-nums; }
+  .et-total { display: flex; justify-content: space-between; align-items: baseline; margin-top: 18px; padding: 14px 16px; background: #15110e; color: #f5f0e6; border-radius: 4px; }
+  .et-total b { font-family: var(--et-serif); font-size: clamp(2rem, 3.5vw, 2.8rem); font-weight: 400; color: #c9a35c; }
+  .et-quote__panel .et-form { margin-top: 22px; display: grid; gap: 6px; }
+  .et-quote__panel .et-form label { color: #6b5228; text-transform: uppercase; letter-spacing: .12em; font-size: .7rem; font-weight: 600; margin-top: 8px; }
+  .et-quote__panel .et-form input:not([type=checkbox]) { width: 100%; box-sizing: border-box; padding: 12px 14px; border: 1px solid rgba(21,17,14,.3); border-radius: 4px; background: #fff; color: #15110e; font: inherit; }
+  .et-quote__panel .et-form input:focus { outline: 2px solid #c9a35c; outline-offset: 1px; }
+  .et-quote__panel .et-form .et-check--small { text-transform: none; letter-spacing: 0; font-size: .85rem; font-weight: 400; color: #15110e; }
+  @media (max-width: 749px) { .et-quote__in { grid-template-columns: 1fr; } .et-quote__panel { position: static; } .et-choices { grid-template-columns: 1fr; } }
+{% endstylesheet %}
+{% schema %}
+{
+  "name": "El Trece: empresas",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Antetítulo", "default": "Regalos para empresas" },
+    { "type": "text", "id": "title", "label": "Título", "default": "Tu regalo de fin de año, cotizado en un minuto." },
+    { "type": "richtext", "id": "text", "label": "Texto", "default": "<p>Para clientes, proveedores o tu equipo. Te confirmamos por WhatsApp en menos de 24 horas.</p>" },
+    { "type": "header", "content": "Precios por caja (MXN)" },
+    { "type": "number", "id": "price_2", "label": "Caja de 2", "default": 1250 },
+    { "type": "number", "id": "price_3", "label": "Caja de 3", "default": 1775 },
+    { "type": "number", "id": "price_6", "label": "Caja de 6", "default": 3400 },
+    { "type": "number", "id": "logo_price", "label": "Tarjeta personalizada por caja", "default": 85 },
+    { "type": "number", "id": "min_qty", "label": "Pedido mínimo (cajas)", "default": 5 },
+    { "type": "header", "content": "Descuentos por volumen" },
+    { "type": "number", "id": "tier1_min", "label": "Nivel 1 desde (cajas)", "default": 10 },
+    { "type": "number", "id": "tier1_pct", "label": "Nivel 1 descuento %", "default": 5 },
+    { "type": "number", "id": "tier2_min", "label": "Nivel 2 desde (cajas)", "default": 25 },
+    { "type": "number", "id": "tier2_pct", "label": "Nivel 2 descuento %", "default": 10 },
+    { "type": "number", "id": "tier3_min", "label": "Nivel 3 desde (cajas)", "default": 50 },
+    { "type": "number", "id": "tier3_pct", "label": "Nivel 3 descuento %", "default": 12 },
+    { "type": "text", "id": "tiers_label", "label": "Texto de descuentos", "default": "10 a 24 cajas: 5% menos · 25 a 49: 10% · 50 o más: 12%" },
+    { "type": "text", "id": "tax_note", "label": "Nota de impuestos", "default": "IVA incluido" },
+    { "type": "text", "id": "success", "label": "Mensaje al enviar", "default": "Listo. Recibimos tu solicitud y te escribimos por WhatsApp en menos de 24 horas." },
+    { "type": "url", "id": "privacy_url", "label": "Liga al aviso de privacidad" },
+    { "type": "header", "content": "Colores" }
+  ],
+  "presets": [{ "name": "El Trece: empresas" }]
+}
+{% endschema %}

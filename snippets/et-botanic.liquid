@@ -1,0 +1,50 @@
+{%- comment -%}
+  Ilustraciones de línea (vid, racimo, hoja, zarcillo) en dorado. Se dibujan al entrar en pantalla.
+  kind: 'branch' | 'cluster' | 'leaf' | 'sprig'. class: clases extra para posicionar.
+{%- endcomment -%}
+{%- assign k = kind | default: 'branch' -%}
+{%- case k -%}
+{%- when 'cluster' -%}
+<svg class="et-bot et-bot--cluster {{ class }}" viewBox="0 0 140 220" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
+  <path pathLength="1" d="M70 4c-2 14 2 24 0 40"/>
+  <path pathLength="1" d="M70 22c18-14 36-4 30 10-4 9-16 6-12-2 3-5 9-2 7 2"/>
+  <path pathLength="1" d="M70 34C52 14 22 18 12 36c12 0 18 10 10 20 16 6 34 2 48-22z"/>
+  <path pathLength="1" d="M70 34L28 44M48 40l-8-12M40 42l-6 10"/>
+  {%- assign rows = '5,6,5,5,4,3,2,1' | split: ',' -%}
+  {%- for n in rows -%}
+    {%- assign cnt = n | plus: 0 -%}
+    {%- assign y = forloop.index0 | times: 19 | plus: 58 -%}
+    {%- assign start = cnt | minus: 1 | times: -9.5 | plus: 70 -%}
+    {%- for i in (1..cnt) -%}
+      {%- assign x = forloop.index0 | times: 19 | plus: start -%}
+      <circle pathLength="1" cx="{{ x }}" cy="{{ y }}" r="9.2"/>
+    {%- endfor -%}
+  {%- endfor -%}
+</svg>
+{%- when 'leaf' -%}
+<svg class="et-bot et-bot--leaf {{ class }}" viewBox="0 0 120 120" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
+  <path pathLength="1" d="M60 112V62"/>
+  <path pathLength="1" d="M60 62C46 60 30 66 22 80c-6-14-4-30 8-38-12-4-20-14-20-26 14 2 22 8 28 16 0-14 8-26 22-32 14 6 22 18 22 32 6-8 14-14 28-16 0 12-8 22-20 26 12 8 14 24 8 38-8-14-24-20-38-18z"/>
+  <path pathLength="1" d="M60 62V20M60 62L28 28M60 62l32-34M60 62L24 78M60 62l36 16"/>
+</svg>
+{%- when 'sprig' -%}
+<svg class="et-bot et-bot--sprig {{ class }}" viewBox="0 0 160 40" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round">
+  <path pathLength="1" d="M4 20h56M100 20h56"/>
+  <path pathLength="1" d="M80 8l4 12-4 12-4-12z"/>
+  <path pathLength="1" d="M60 20c-4-8-12-10-18-8 4 6 10 9 18 8zM60 20c-4 8-12 10-18 8 4-6 10-9 18-8zM100 20c4-8 12-10 18-8-4 6-10 9-18 8zM100 20c4 8 12 10 18 8-4-6-10-9-18-8z"/>
+</svg>
+{%- else -%}
+<svg class="et-bot et-bot--branch {{ class }}" viewBox="0 0 480 160" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
+  <path pathLength="1" d="M2 96C70 56 120 128 190 92s110-60 170-22 80 34 116 8"/>
+  <path pathLength="1" d="M78 84c-6-24 10-44 34-46-4 12 2 22 14 26-10 10-28 16-48 20z"/>
+  <path pathLength="1" d="M78 84c10-12 22-28 34-46"/>
+  <path pathLength="1" d="M190 92c16 16 40 18 56 6-12-6-14-18-8-30-18-2-38 6-48 24z"/>
+  <path pathLength="1" d="M190 92c18-4 34-12 48-24"/>
+  <path pathLength="1" d="M300 66c-4-20 4-36 22-44 2 14 12 22 26 22-10 14-28 22-48 22z"/>
+  <path pathLength="1" d="M300 66c12-10 24-24 22-44"/>
+  <path pathLength="1" d="M140 104c-4 18 12 24 18 14 4-8-6-12-8-6"/>
+  <path pathLength="1" d="M402 80c8 14 26 12 26-2 0-10-12-10-12-2"/>
+  <path pathLength="1" d="M360 70c2 10 0 18-4 26"/>
+  <circle pathLength="1" cx="350" cy="104" r="7"/><circle pathLength="1" cx="364" cy="104" r="7"/><circle pathLength="1" cx="357" cy="116" r="7"/><circle pathLength="1" cx="343" cy="116" r="7"/><circle pathLength="1" cx="371" cy="116" r="7"/><circle pathLength="1" cx="350" cy="128" r="7"/><circle pathLength="1" cx="364" cy="128" r="7"/><circle pathLength="1" cx="357" cy="140" r="7"/>
+</svg>
+{%- endcase -%}

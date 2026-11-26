@@ -1,0 +1,74 @@
+{%- comment -%} Banda del Club El Trece: foto con degradado y registro por correo (crea cliente con etiqueta "club"). {%- endcomment -%}
+{%- assign s = section.settings -%}
+<section class="et-clubband" id="club">
+  <div class="et-clubband__media" aria-hidden="true">
+    {%- if s.image != blank -%}
+      {{ s.image | image_url: width: 2000 | image_tag: loading: 'lazy', sizes: '100vw', widths: '800, 1200, 1600, 2000', alt: '' }}
+    {%- else -%}
+      <img src="{{ 'et-hero.jpg' | asset_url }}" alt="" loading="lazy" width="1600" height="1067">
+    {%- endif -%}
+  </div>
+  {%- render 'et-botanic', kind: 'cluster', class: 'et-clubband__cluster' -%}
+  <div class="et-wrap et-clubband__in">
+    <div class="et-clubband__copy et-reveal">
+      {%- if s.eyebrow != blank -%}<p class="et-eyebrow">{{ s.eyebrow }}</p>{%- endif -%}
+      <h2 class="et-h2">{{ s.title }}</h2>
+      {%- if s.text != blank -%}<div class="et-prose et-clubband__text">{{ s.text }}</div>{%- endif -%}
+      {%- form 'customer', id: 'EtClubForm', class: 'et-clubband__form' -%}
+        {%- if form.posted_successfully? -%}
+          <p class="et-ok">{{ s.success }}</p>
+        {%- else -%}
+          <input type="hidden" name="contact[tags]" value="club,newsletter">
+          <label for="EtClubEmail" class="et-clubband__label">Correo electrónico</label>
+          <div class="et-clubband__row">
+            <input id="EtClubEmail" type="email" name="contact[email]" autocomplete="email" placeholder="tu@correo.com" required>
+            <button type="submit" class="et-btn et-btn--gold">{{ s.button }}</button>
+          </div>
+          {%- if form.errors -%}<p class="et-err">{{ form.errors | default_errors }}</p>{%- endif -%}
+          <p class="et-help">{{ s.legal }}</p>
+        {%- endif -%}
+      {%- endform -%}
+    </div>
+  </div>
+</section>
+{% stylesheet %}
+  .et-clubband { position: relative; isolation: isolate; color: var(--et-cream); background: var(--et-ink); overflow: hidden; }
+  .et-clubband__media { position: absolute; inset: 0; z-index: -1; }
+  .et-clubband__media img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .et-clubband__media::after { content: ''; position: absolute; inset: 0; background: linear-gradient(90deg, rgba(21,17,14,.25) 0%, rgba(21,17,14,.55) 45%, rgba(21,17,14,.94) 70%), linear-gradient(0deg, rgba(21,17,14,.5), transparent 40%); }
+  .et-clubband__in { display: grid; grid-template-columns: 1fr minmax(0, 520px); min-height: clamp(420px, 52vw, 560px); align-items: center; padding-block: clamp(64px, 8vw, 104px); }
+  .et-clubband__copy { grid-column: 2; }
+  .et-clubband__cluster { position: absolute; left: clamp(20px, 8vw, 140px); top: 12%; width: clamp(120px, 16vw, 230px); color: var(--et-gold); opacity: .55; z-index: 0; }
+  .et-clubband__in { position: relative; z-index: 1; }
+  @media (max-width: 749px) { .et-clubband__cluster { left: auto; right: 18px; top: 24px; width: 96px; } }
+  .et-clubband .et-eyebrow { color: var(--et-gold); opacity: 1; }
+  .et-clubband__text { margin-top: 16px; opacity: .85; }
+  .et-clubband__form { margin-top: 32px; }
+  .et-clubband__label { display: block; font-family: var(--et-sans); font-size: .66rem; letter-spacing: .2em; text-transform: uppercase; opacity: .7; margin-bottom: 8px; }
+  .et-clubband__row { display: flex; gap: 14px; align-items: stretch; }
+  .et-clubband__row input { flex: 1; min-width: 0; min-height: 48px; padding: 10px 2px; background: transparent; border: 0; border-bottom: 1px solid rgba(237,230,214,.5); color: inherit; font: inherit; font-family: var(--et-sans); }
+  .et-clubband__row input::placeholder { color: rgba(237,230,214,.5); }
+  .et-clubband__row input:focus { outline: none; border-bottom-color: var(--et-gold); }
+  .et-clubband .et-help { margin-top: 14px; }
+  @media (max-width: 749px) {
+    .et-clubband__media::after { background: linear-gradient(180deg, rgba(21,17,14,.35) 0%, rgba(21,17,14,.92) 55%); }
+    .et-clubband__in { grid-template-columns: 1fr; align-items: end; min-height: 560px; }
+    .et-clubband__copy { grid-column: 1; }
+    .et-clubband__row { flex-direction: column; }
+  }
+{% endstylesheet %}
+{% schema %}
+{
+  "name": "El Trece: Club",
+  "settings": [
+    { "type": "image_picker", "id": "image", "label": "Foto de fondo" },
+    { "type": "text", "id": "eyebrow", "label": "Antetítulo", "default": "Club El Trece" },
+    { "type": "text", "id": "title", "label": "Título", "default": "Únete a quienes brindan sin prisa." },
+    { "type": "richtext", "id": "text", "label": "Texto", "default": "<p>Primero en los lotes nuevos, invitaciones a catas privadas y precio de socio.</p>" },
+    { "type": "text", "id": "button", "label": "Botón", "default": "Unirme" },
+    { "type": "text", "id": "legal", "label": "Nota legal", "default": "Solo para mayores de 18 años. Puedes darte de baja cuando quieras." },
+    { "type": "text", "id": "success", "label": "Mensaje al registrarse", "default": "Ya eres parte del Club. Te escribimos con el próximo lote." }
+  ],
+  "presets": [{ "name": "El Trece: Club" }]
+}
+{% endschema %}

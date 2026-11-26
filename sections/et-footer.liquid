@@ -1,0 +1,106 @@
+{%- comment -%} Pie de página El Trece: columnas de ligas, datos de la casa, redes y leyenda de consumo responsable. {%- endcomment -%}
+{%- assign s = section.settings -%}
+<footer class="et-foot et-sec--paper">
+  {%- render 'et-botanic', kind: 'branch', class: 'et-foot__vine' -%}
+  <div class="et-wrap">
+    <div class="et-foot__brand">
+      <a class="et-foot__mark" href="{{ routes.root_url }}"><img src="{{ 'et-logo-oro.png' | asset_url }}" alt="{{ shop.name | escape }}" width="900" height="493" loading="lazy"></a>
+      <p class="et-foot__tag">{{ s.tagline }}</p>
+    </div>
+    <div class="et-foot__news">
+      <div>
+        <p class="et-eyebrow">Club El Trece</p>
+        <p class="et-foot__newsh">Catas, lanzamientos y el vino del mes, una vez al mes.</p>
+      </div>
+      {%- form 'customer', id: 'EtFootNews', class: 'et-foot__newsform' -%}
+        <input type="hidden" name="contact[tags]" value="newsletter, footer">
+        {%- if form.posted_successfully? -%}
+          <p class="et-foot__ok">¡Listo! Ya eres parte del Club.</p>
+        {%- else -%}
+          <label class="visually-hidden" for="EtFootNewsEmail">Correo electrónico</label>
+          <input id="EtFootNewsEmail" type="email" name="contact[email]" placeholder="tu@correo.com" autocomplete="email" required>
+          <button type="submit" class="et-btn et-btn--solid">Suscribirme</button>
+          {%- if form.errors -%}<p class="et-err">{{ form.errors | default_errors }}</p>{%- endif -%}
+        {%- endif -%}
+      {%- endform -%}
+    </div>
+    <div class="et-foot__grid">
+      {%- for block in section.blocks -%}
+        <div class="et-foot__col" {{ block.shopify_attributes }}>
+          <h2 class="et-foot__h">{{ block.settings.title }}</h2>
+          {%- case block.type -%}
+            {%- when 'menu' -%}
+              {%- assign m = block.settings.menu -%}
+              {%- if m != blank and m.links.size > 0 -%}
+                <ul>{%- for l in m.links -%}<li><a href="{{ l.url }}">{{ l.title }}</a></li>{%- endfor -%}</ul>
+              {%- endif -%}
+            {%- when 'texto' -%}
+              <div class="et-foot__txt">{{ block.settings.text }}</div>
+          {%- endcase -%}
+        </div>
+      {%- endfor -%}
+      <div class="et-foot__col">
+        <h2 class="et-foot__h">Síguenos</h2>
+        <ul class="et-foot__social">
+          {%- if s.instagram != blank -%}<li><a href="{{ s.instagram }}" target="_blank" rel="noopener" aria-label="Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="3.5" y="3.5" width="17" height="17" rx="4.5"/><circle cx="12" cy="12" r="4"/><circle cx="17.3" cy="6.7" r=".9" fill="currentColor" stroke="none"/></svg><span>Instagram</span></a></li>{%- endif -%}
+          {%- if s.facebook != blank -%}<li><a href="{{ s.facebook }}" target="_blank" rel="noopener" aria-label="Facebook"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M14 8.5V7c0-.8.5-1.3 1.3-1.3H17V3h-2.3C12.3 3 11 4.4 11 6.8v1.7H8.5V11.5H11V21h3v-9.5h2.5l.5-3z"/></svg><span>Facebook</span></a></li>{%- endif -%}
+          {%- if s.whatsapp != blank -%}<li><a href="https://wa.me/{{ s.whatsapp | remove: ' ' | remove: '+' }}" target="_blank" rel="noopener" aria-label="WhatsApp"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M4 20l1.3-3.9A8 8 0 1 1 8 19z"/><path d="M9 9.5c.3 2.2 2.3 4.3 4.6 4.8l1.2-1.2 1.8.8-.4 1.6c-3.6.6-8-3.4-7.8-7.2l1.6-.5.9 1.7z"/></svg><span>WhatsApp</span></a></li>{%- endif -%}
+        </ul>
+      </div>
+    </div>
+    <div class="et-foot__legal">
+      <p class="et-foot__warn">{{ s.warning }}</p>
+      <p>© {{ 'now' | date: '%Y' }} {{ shop.name }} · <a href="{{ routes.root_url }}policies/privacy-policy">Aviso de privacidad</a> · <a href="{{ routes.root_url }}policies/terms-of-service">Términos</a></p>
+    </div>
+  </div>
+</footer>
+{% stylesheet %}
+  .et-foot__news { display: flex; flex-wrap: wrap; gap: 20px 48px; align-items: center; justify-content: space-between; padding-block: clamp(28px, 4vw, 44px); border-bottom: 1px solid var(--et-line); position: relative; }
+  .et-foot__newsh { font-family: var(--et-serif); font-size: clamp(1.25rem, 2.2vw, 1.7rem); margin: 0; max-width: 30ch; }
+  .et-foot__newsform { display: flex; flex-wrap: wrap; gap: 10px; flex: 1 1 340px; max-width: 520px; }
+  .et-foot__newsform input[type=email] { flex: 1 1 220px; min-height: 46px; padding: 0 16px; border: 1px solid color-mix(in srgb, currentColor 35%, transparent); background: transparent; color: inherit; font: inherit; }
+  .et-foot__ok { font-family: var(--et-serif); font-size: 1.15rem; margin: 0; }
+  .et-foot { padding-block: clamp(56px, 8vw, 96px) 28px; border-top: 1px solid var(--et-line); position: relative; overflow: clip; }
+  .et-foot__vine { position: absolute; right: -40px; top: -10px; width: min(520px, 70vw); color: var(--et-gold); opacity: .5; pointer-events: none; }
+  .et-foot__mark { width: clamp(110px, 10vw, 150px); flex: none; display: block; }
+  .et-foot__mark .et-logo--emblem { color: var(--et-gold-deep); }
+  .et-foot__brand { display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; position: relative; gap: 12px 32px; padding-bottom: clamp(32px, 5vw, 56px); border-bottom: 1px solid var(--et-line); }
+  .et-foot__word { font-family: var(--et-serif); font-size: clamp(2.8rem, 7vw, 5.5rem); line-height: .9; margin: 0; letter-spacing: -.02em; }
+  .et-foot__tag { font-family: var(--et-serif); font-style: italic; font-size: 1.1rem; margin: 0; opacity: .75; }
+  .et-foot__grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 36px 32px; padding-block: clamp(36px, 5vw, 56px); }
+  .et-foot__h { font-family: var(--et-serif); font-weight: 400; font-size: 1.2rem; margin: 0 0 16px; }
+  .et-foot__col ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+  .et-foot__col a { color: inherit; text-decoration: none; font-family: var(--et-sans); font-size: .9rem; opacity: .78; transition: opacity .25s; }
+  .et-foot__col a:hover { opacity: 1; text-decoration: underline; text-underline-offset: 4px; }
+  .et-foot__txt { font-family: var(--et-sans); font-size: .9rem; line-height: 1.7; opacity: .78; }
+  .et-foot__txt p { margin: 0 0 .4em; }
+  .et-foot__social a { display: inline-flex; gap: 10px; align-items: center; }
+  .et-foot__social svg { width: 20px; height: 20px; }
+  .et-foot__legal { border-top: 1px solid var(--et-line); padding-top: 22px; display: flex; flex-wrap: wrap; justify-content: space-between; gap: 10px 24px; font-family: var(--et-sans); font-size: .76rem; opacity: .72; }
+  .et-foot__legal p { margin: 0; }
+  .et-foot__legal a { color: inherit; }
+  .et-foot__warn { text-transform: uppercase; letter-spacing: .14em; font-weight: 600; }
+{% endstylesheet %}
+{% schema %}
+{
+  "name": "El Trece: pie",
+  "settings": [
+    { "type": "text", "id": "tagline", "label": "Frase", "default": "Porque hay fechas que se brindan para siempre." },
+    { "type": "url", "id": "instagram", "label": "Instagram" },
+    { "type": "url", "id": "facebook", "label": "Facebook" },
+    { "type": "text", "id": "whatsapp", "label": "WhatsApp (solo números con lada, ej. 523312345678)" },
+    { "type": "text", "id": "warning", "label": "Leyenda de consumo", "default": "Evita el exceso · Venta solo a mayores de 18 años" }
+  ],
+  "blocks": [
+    { "type": "menu", "name": "Menú", "settings": [
+      { "type": "text", "id": "title", "label": "Título", "default": "Vinos" },
+      { "type": "link_list", "id": "menu", "label": "Menú" }
+    ] },
+    { "type": "texto", "name": "Texto", "settings": [
+      { "type": "text", "id": "title", "label": "Título", "default": "La casa" },
+      { "type": "richtext", "id": "text", "label": "Texto", "default": "<p>San Pedro Tlaquepaque, Jalisco</p>" }
+    ] }
+  ],
+  "presets": [{ "name": "El Trece: pie" }]
+}
+{% endschema %}

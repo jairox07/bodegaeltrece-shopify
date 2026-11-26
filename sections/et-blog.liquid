@@ -1,0 +1,61 @@
+{%- comment -%} Página del Diario: encabezado editorial y artículos en rejilla alternada. {%- endcomment -%}
+{%- paginate blog.articles by 9 -%}
+<section class="et-sec et-sec--paper et-blogpage">
+  {%- render 'et-botanic', kind: 'cluster', class: 'et-blogpage__cluster' -%}
+  <div class="et-wrap">
+    <header class="et-blogpage__head">
+      <p class="et-eyebrow et-reveal">Diario El Trece</p>
+      <h1 class="et-blogpage__title et-h2">{{ blog.title }}</h1>
+      <p class="et-prose et-reveal" style="--i:2">{{ section.settings.intro }}</p>
+      {%- if blog.all_tags.size > 0 -%}
+        <nav class="et-blogpage__tags et-reveal" style="--i:3" aria-label="Temas">
+          <a href="{{ blog.url }}"{% unless current_tags %} aria-current="page"{% endunless %}>Todo</a>
+          {%- for t in blog.all_tags -%}<a href="{{ blog.url }}/tagged/{{ t | handleize }}"{% if current_tags contains t %} aria-current="page"{% endif %}>{{ t }}</a>{%- endfor -%}
+        </nav>
+      {%- endif -%}
+    </header>
+    <div class="et-blogpage__grid">
+      {%- for a in blog.articles -%}
+        <article class="et-card et-reveal" style="--i:{{ forloop.index0 | modulo: 3 }}">
+          <a class="et-card__media" href="{{ a.url }}" tabindex="-1" aria-hidden="true">
+            {%- if a.image -%}{{ a.image | image_url: width: 900 | image_tag: loading: 'lazy', sizes: '(min-width: 990px) 33vw, 100vw', widths: '400, 600, 900', alt: '' }}{%- else -%}<span class="et-post__ph">{%- render 'et-botanic', kind: 'cluster' -%}</span>{%- endif -%}
+          </a>
+          <p class="et-post__meta">{{ a.published_at | date: '%d · %m · %Y' }}{% if a.tags.size > 0 %} · {{ a.tags.first }}{% endif %}</p>
+          <h2 class="et-post__title"><a href="{{ a.url }}">{{ a.title }}</a></h2>
+          <p class="et-card__excerpt">{{ a.excerpt_or_content | strip_html | truncatewords: 22 }}</p>
+        </article>
+      {%- else -%}
+        <p class="et-empty">Aún no hay artículos.</p>
+      {%- endfor -%}
+    </div>
+    {%- if paginate.pages > 1 -%}<div class="et-blogpage__pag">{{ paginate | default_pagination: next: 'Siguiente', previous: 'Anterior' }}</div>{%- endif -%}
+  </div>
+</section>
+{%- endpaginate -%}
+{% stylesheet %}
+  .et-blogpage { padding-top: clamp(140px, 16vw, 200px); }
+  .et-blogpage__cluster { position: absolute; right: clamp(16px, 6vw, 96px); top: 110px; width: clamp(90px, 12vw, 160px); color: var(--et-gold); opacity: .7; }
+  .et-blogpage__head { max-width: 760px; margin-bottom: clamp(48px, 7vw, 96px); }
+  .et-blogpage__title { font-size: clamp(2.6rem, 6vw, 4.6rem); margin-bottom: 20px; }
+  .et-blogpage__tags { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 28px; }
+  .et-blogpage__tags a { font-family: var(--et-sans); font-size: .72rem; letter-spacing: .14em; text-transform: uppercase; padding: 9px 16px; border: 1px solid color-mix(in srgb, var(--et-ink) 22%, transparent); border-radius: 999px; color: inherit; text-decoration: none; transition: background-color .3s, color .3s; }
+  .et-blogpage__tags a:hover, .et-blogpage__tags a[aria-current] { background: var(--et-ink); color: var(--et-paper); }
+  .et-blogpage__grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(40px, 5vw, 72px) clamp(24px, 3vw, 44px); }
+  .et-blogpage__grid > :nth-child(3n+2) { margin-top: clamp(0px, 6vw, 80px); }
+  .et-card__media { display: block; overflow: hidden; border-radius: 18px; margin-bottom: 18px; background: var(--et-panel); }
+  .et-card__media img { width: 100%; aspect-ratio: 4 / 5; object-fit: cover; display: block; transition: transform 1.4s var(--et-ease); }
+  .et-card:hover .et-card__media img { transform: scale(1.05); }
+  .et-card__excerpt { font-family: var(--et-sans); font-size: .95rem; line-height: 1.7; opacity: .78; margin: 10px 0 0; }
+  .et-card .et-post__title a { color: inherit; text-decoration: none; }
+  .et-blogpage__pag { margin-top: 64px; text-align: center; font-family: var(--et-sans); }
+  @media (max-width: 989px) { .et-blogpage__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } .et-blogpage__grid > :nth-child(3n+2) { margin-top: 0; } .et-blogpage__grid > :nth-child(2n) { margin-top: 48px; } }
+  @media (max-width: 599px) { .et-blogpage__grid { grid-template-columns: 1fr; } .et-blogpage__grid > :nth-child(2n) { margin-top: 0; } }
+{% endstylesheet %}
+{% schema %}
+{
+  "name": "El Trece: blog",
+  "settings": [
+    { "type": "textarea", "id": "intro", "label": "Introducción", "default": "Maridajes, temperaturas, regiones y pequeñas historias de la bodega. Para disfrutar el vino con más intención." }
+  ]
+}
+{% endschema %}

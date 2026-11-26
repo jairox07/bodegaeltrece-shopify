@@ -1,0 +1,35 @@
+{%- comment -%} Cinta en movimiento con los vinos de la casa, separados por hojas de vid. {%- endcomment -%}
+{%- assign s = section.settings -%}
+{%- assign items = s.items | split: ',' -%}
+<section class="et-marquee" aria-label="{{ s.items | escape }}">
+  <div class="et-marquee__track" aria-hidden="true">
+    {%- for round in (1..2) -%}
+      <div class="et-marquee__group">
+        {%- for it in items -%}
+          <span class="et-marquee__item">{{ it | strip }}</span>
+          {%- render 'et-botanic', kind: 'leaf', class: 'et-marquee__leaf' -%}
+        {%- endfor -%}
+      </div>
+    {%- endfor -%}
+  </div>
+</section>
+{% stylesheet %}
+  .et-marquee { background: var(--et-paper); color: var(--et-ink); padding-block: clamp(22px, 3vw, 36px); overflow: hidden; border-block: 1px solid color-mix(in srgb, var(--et-ink) 10%, transparent); }
+  .et-marquee__track { display: flex; width: max-content; animation: et-marquee 48s linear infinite; }
+  .et-marquee:hover .et-marquee__track { animation-play-state: paused; }
+  .et-marquee__group { display: flex; align-items: center; gap: clamp(22px, 3vw, 44px); padding-right: clamp(22px, 3vw, 44px); }
+  .et-marquee__item { font-family: var(--et-serif); font-style: italic; font-size: clamp(1.6rem, 3.4vw, 2.8rem); white-space: nowrap; letter-spacing: -.01em; }
+  .et-marquee__leaf { width: clamp(26px, 3vw, 38px); height: auto; color: var(--et-gold-deep); flex: none; }
+  .et-marquee .et-bot path { stroke-dashoffset: 0; }
+  @keyframes et-marquee { to { transform: translateX(-50%); } }
+  @media (prefers-reduced-motion: reduce) { .et-marquee__track { animation: none; } }
+{% endstylesheet %}
+{% schema %}
+{
+  "name": "El Trece: cinta",
+  "settings": [
+    { "type": "textarea", "id": "items", "label": "Palabras (separadas por coma)", "default": "Cabernet Sauvignon, Syrah, Nebbiolo Gran Reserva, Petite Sirah, Sauvignon Blanc, Moscato, Rosé, Legado" }
+  ],
+  "presets": [{ "name": "El Trece: cinta" }]
+}
+{% endschema %}

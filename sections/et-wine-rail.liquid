@@ -1,0 +1,101 @@
+{%- comment -%} Riel horizontal de vinos o cajas, con flechas. Toma los productos de una colección. {%- endcomment -%}
+{%- assign s = section.settings -%}
+{%- assign col = s.collection -%}
+<section class="et-sec et-sec--paper et-rail" data-et-rail>
+  <div class="et-wrap">
+    <header class="et-rail__head">
+      <div class="et-reveal">
+        {%- if s.eyebrow != blank -%}<p class="et-eyebrow">{{ s.eyebrow }}</p>{%- endif -%}
+        <h2 class="et-h2">{{ s.title }}</h2>
+      </div>
+      <div class="et-rail__nav et-reveal" style="--i:1">
+        {%- if col != blank -%}<a class="et-link" href="{{ col.url }}">{{ s.link_label }}</a>{%- endif -%}
+        <button type="button" class="et-icon-btn" data-et-prev aria-label="Anterior"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M15 5l-7 7 7 7"/></svg></button>
+        <button type="button" class="et-icon-btn" data-et-next aria-label="Siguiente"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 5l7 7-7 7"/></svg></button>
+      </div>
+    </header>
+  </div>
+
+  <div class="et-rail__track" data-et-track>
+    {%- if col != blank and col.products.size > 0 -%}
+      {%- for product in col.products limit: s.limit -%}
+        <article class="et-wine et-reveal" style="--i:{{ forloop.index0 | at_most: 4 }}">
+          <a class="et-wine__media{% if product.featured_media %} has-photo{% endif %}" href="{{ product.url }}" aria-label="{{ product.title | escape }}" tabindex="-1">
+            {%- if product.featured_media -%}
+              {%- render 'et-wine-img', p: product, sizes: '(min-width: 990px) 360px, 80vw' -%}
+              <span class="et-wine__shade" aria-hidden="true"></span>
+              <span class="et-wine__seal" aria-hidden="true">{%- render 'et-logo', variant: 'header' -%}</span>
+              <span class="et-wine__label" aria-hidden="true"><small>Bodega El Trece</small>{{ product.type }}</span>
+            {%- else -%}
+              {%- render 'et-bottle', label: product.title, kind: product.type -%}
+            {%- endif -%}
+          </a>
+          <div class="et-wine__body">
+            {%- if product.type != blank -%}<p class="et-wine__type">{{ product.type }}</p>{%- endif -%}
+            <h3 class="et-wine__title"><a href="{{ product.url }}">{{ product.title }}</a></h3>
+            {%- if product.description != blank -%}<p class="et-wine__desc">{{ product.description | strip_html | truncatewords: 12 }}</p>{%- endif -%}
+            <div class="et-wine__buy">
+              <span class="et-wine__price">{{ product.price | money }}</span>
+              {%- form 'product', product, class: 'et-wine__form' -%}
+                <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}">
+                <button type="submit" class="et-icon-btn" {% unless product.available %}disabled{% endunless %} aria-label="Agregar {{ product.title | escape }} al carrito">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 7h14l-1.2 12.1a1 1 0 0 1-1 .9H7.2a1 1 0 0 1-1-.9L5 7z"/><path d="M9 7V5.5a3 3 0 0 1 6 0V7"/></svg>
+                </button>
+              {%- endform -%}
+            </div>
+          </div>
+        </article>
+      {%- endfor -%}
+    {%- else -%}
+      <p class="et-empty et-wrap">Elige una colección en el editor para mostrar aquí los vinos.</p>
+    {%- endif -%}
+  </div>
+</section>
+{% stylesheet %}
+  .et-wine__media:has(.et-wine-img) { aspect-ratio: 3 / 5; }
+  .et-wine__media .et-wine-img { filter: none; }
+  .et-wine__media:has(.et-wine-img) .et-wine__shade { background: linear-gradient(180deg, rgba(21,17,14,.25) 0%, transparent 18%); }
+  .et-wine__media:has(.et-wine-img) .et-wine__label, .et-wine__media:has(.et-wine-img) .et-wine__seal { display: none; }
+  .et-rail__head { display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-end; justify-content: space-between; margin-bottom: clamp(28px, 4vw, 48px); }
+  .et-rail__nav { display: flex; align-items: center; gap: 12px; }
+  .et-rail__nav .et-link { margin-right: 12px; }
+  .et-rail__nav .et-icon-btn[disabled] { opacity: .3; cursor: default; }
+  .et-rail__track { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(270px, 340px); justify-content: safe center; gap: 24px; overflow-x: auto; scroll-snap-type: x mandatory; scroll-padding-inline: max(var(--et-gutter), calc((100% - 1360px) / 2 + var(--et-gutter))); padding-inline: max(var(--et-gutter), calc((100% - 1360px) / 2 + var(--et-gutter))); padding-bottom: 8px; scrollbar-width: none; }
+  .et-rail__track::-webkit-scrollbar { display: none; }
+  .et-wine { scroll-snap-align: start; display: grid; grid-template-rows: auto 1fr; background: var(--et-panel); position: relative; transition: background-color .4s var(--et-ease); }
+  .et-wine:hover { background: color-mix(in srgb, var(--et-panel) 85%, var(--et-gold)); }
+  .et-wine__media { display: block; position: relative; aspect-ratio: 4 / 5; overflow: hidden; background: var(--et-ink); }
+  .et-wine__media img { width: 100%; height: 100%; object-fit: cover; display: block; filter: saturate(.85) contrast(1.05) sepia(.12); transition: transform 1.2s var(--et-ease); }
+  .et-wine:hover .et-wine__media img { transform: scale(1.05); }
+  .et-wine__media:not(.has-photo) { display: grid; place-items: end center; padding: 12% 26% 6%; box-sizing: border-box; background: radial-gradient(circle at 50% 35%, #2b211b, var(--et-ink)); }
+  .et-wine__media svg { width: 100%; height: 100%; display: block; }
+  .et-wine__shade { position: absolute; inset: 0; background: linear-gradient(180deg, rgba(21,17,14,.35) 0%, transparent 30%, transparent 55%, rgba(21,17,14,.85) 100%); }
+  .et-wine__seal { position: absolute; top: 16px; left: 16px; color: var(--et-gold); line-height: 0; }
+  .et-wine__seal .et-logo__word, .et-wine__seal .visually-hidden { display: none; }
+  .et-wine__seal .et-logo__seal { width: 44px; height: 44px; filter: drop-shadow(0 2px 6px rgba(0,0,0,.5)); }
+  .et-wine__label { position: absolute; left: 18px; right: 18px; bottom: 16px; color: var(--et-cream); font-family: var(--et-serif); font-size: 1.35rem; line-height: 1.1; display: grid; gap: 4px; }
+  .et-wine__label small { font-family: var(--et-sans); font-size: .6rem; letter-spacing: .28em; text-transform: uppercase; color: var(--et-gold); }
+  .et-wine__body { display: grid; gap: 6px; align-content: start; padding: 20px 22px 22px; }
+  .et-wine__type { font-family: var(--et-sans); font-size: .64rem; letter-spacing: .2em; text-transform: uppercase; opacity: .6; margin: 0; }
+  .et-wine__title { font-family: var(--et-serif); font-weight: 400; font-size: 1.5rem; line-height: 1.1; margin: 0; text-transform: uppercase; letter-spacing: .02em; }
+  .et-wine__title a { color: inherit; text-decoration: none; }
+  .et-wine__title a::after { content: ''; position: absolute; inset: 0; }
+  .et-wine__desc { font-family: var(--et-serif); font-style: italic; font-size: .92rem; line-height: 1.45; opacity: .75; margin: 2px 0 0; }
+  .et-wine__buy { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: 16px; position: relative; z-index: 1; }
+  .et-wine__price { font-family: var(--et-serif); font-size: 1.3rem; font-variant-numeric: tabular-nums; }
+  .et-wine__form { margin: 0; }
+  @media (max-width: 749px) { .et-rail__track { grid-auto-columns: 82%; } .et-rail__nav .et-icon-btn { display: none; } }
+{% endstylesheet %}
+{% schema %}
+{
+  "name": "El Trece: riel de vinos",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Antetítulo", "default": "La colección" },
+    { "type": "text", "id": "title", "label": "Título", "default": "Nuestros vinos" },
+    { "type": "collection", "id": "collection", "label": "Colección" },
+    { "type": "range", "id": "limit", "label": "Máximo de productos", "min": 2, "max": 16, "step": 1, "default": 10 },
+    { "type": "text", "id": "link_label", "label": "Texto de la liga", "default": "Ver todo" }
+  ],
+  "presets": [{ "name": "El Trece: riel de vinos" }]
+}
+{% endschema %}

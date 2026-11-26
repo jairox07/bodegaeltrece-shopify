@@ -1,0 +1,81 @@
+{%- comment -%}
+  Frases que rotan con fundido (cada una visible ~8 s), cada una con enlace al vino.
+  Pensada para reseñas reales de clientes: agrega un bloque por reseña con nombre y profesión/empresa
+  sólo con autorización de la persona. Mientras tanto muestra notas de las fichas de cata de la bodega.
+{%- endcomment -%}
+{%- assign s = section.settings -%}
+<section class="et-voices" data-et-voices data-interval="{{ s.seconds | default: 8 }}">
+  <div class="et-wrap et-voices__in">
+    {%- if s.eyebrow != blank -%}<p class="et-eyebrow">{{ s.eyebrow }}</p>{%- endif -%}
+    <div class="et-voices__stage" aria-live="polite">
+      {%- for block in section.blocks -%}
+        {%- assign b = block.settings -%}
+        <figure class="et-voices__item{% if forloop.first %} is-on{% endif %}" {{ block.shopify_attributes }}>
+          <span class="et-voices__mark" aria-hidden="true">“</span>
+          <blockquote>{{ b.quote }}</blockquote>
+          <figcaption>
+            <b>{{ b.author }}</b>{%- if b.role != blank -%}<span>{{ b.role }}</span>{%- endif -%}
+          </figcaption>
+          {%- if b.link != blank -%}<a class="et-voices__buy" href="{{ b.link }}">{{ b.link_label | default: 'Ver el vino' }} <span aria-hidden="true">→</span></a>{%- endif -%}
+        </figure>
+      {%- endfor -%}
+    </div>
+    {%- if section.blocks.size > 1 -%}
+      <div class="et-voices__dots" role="tablist" aria-label="Frases">
+        {%- for block in section.blocks -%}<button type="button" class="{% if forloop.first %}is-on{% endif %}" aria-label="Frase {{ forloop.index }}"></button>{%- endfor -%}
+      </div>
+    {%- endif -%}
+  </div>
+</section>
+<script>
+  (function () {
+    var root = document.querySelector('[data-et-voices]'); if (!root) return;
+    var items = root.querySelectorAll('.et-voices__item'), dots = root.querySelectorAll('.et-voices__dots button');
+    if (items.length < 2) return;
+    var i = 0, ms = (parseFloat(root.dataset.interval) || 8) * 1000, t;
+    function show(n) { items[i].classList.remove('is-on'); if (dots[i]) dots[i].classList.remove('is-on'); i = (n + items.length) % items.length; items[i].classList.add('is-on'); if (dots[i]) dots[i].classList.add('is-on'); }
+    function start() { clearInterval(t); t = setInterval(function () { show(i + 1); }, ms); }
+    dots.forEach(function (d, n) { d.addEventListener('click', function () { show(n); start(); }); });
+    root.addEventListener('mouseenter', function () { clearInterval(t); });
+    root.addEventListener('mouseleave', start);
+    start();
+  })();
+</script>
+{% stylesheet %}
+  .et-voices { background: #15110e; color: #ede6d6; padding-block: clamp(64px, 8vw, 110px); text-align: center; border-top: 1px solid rgba(201,163,92,.35); }
+  .et-voices .et-eyebrow { color: #c9a35c; opacity: 1; }
+  .et-voices__in { max-width: 860px; }
+  .et-voices__stage { display: grid; min-height: 280px; }
+  .et-voices__item { grid-area: 1 / 1; margin: 0; opacity: 0; visibility: hidden; transform: translateY(10px); transition: opacity 1.2s ease, transform 1.2s ease, visibility 0s linear 1.2s; display: grid; justify-items: center; align-content: center; gap: 14px; }
+  .et-voices__item.is-on { opacity: 1; visibility: visible; transform: none; transition: opacity 1.2s ease .4s, transform 1.2s ease .4s, visibility 0s; }
+  .et-voices__mark { font-family: var(--et-serif); font-size: 4.5rem; line-height: .6; color: #c9a35c; }
+  .et-voices blockquote { margin: 0; font-family: var(--et-serif); font-size: clamp(1.35rem, 2.6vw, 2rem); line-height: 1.4; color: #f5f0e6; max-width: 34ch; text-wrap: balance; }
+  .et-voices figcaption { display: grid; gap: 2px; }
+  .et-voices figcaption b { font-weight: 600; font-size: .85rem; letter-spacing: .14em; text-transform: uppercase; }
+  .et-voices figcaption span { font-size: .85rem; color: rgba(237,230,214,.6); }
+  .et-voices__buy { margin-top: 6px; color: #c9a35c; font-size: .75rem; letter-spacing: .18em; text-transform: uppercase; text-decoration: none; border-bottom: 1px solid rgba(201,163,92,.5); padding-bottom: 4px; }
+  .et-voices__buy:hover { color: #f5f0e6; border-color: #f5f0e6; }
+  .et-voices__dots { display: flex; gap: 10px; justify-content: center; margin-top: 28px; }
+  .et-voices__dots button { width: 8px; height: 8px; padding: 0; border-radius: 50%; border: 1px solid #c9a35c; background: transparent; cursor: pointer; }
+  .et-voices__dots button.is-on { background: #c9a35c; }
+  @media (prefers-reduced-motion: reduce) { .et-voices__item, .et-voices__item.is-on { transition: none; transform: none; } }
+{% endstylesheet %}
+{% schema %}
+{
+  "name": "El Trece: frases",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Antetítulo", "default": "Lo que dice cada copa" },
+    { "type": "range", "id": "seconds", "label": "Segundos por frase", "min": 4, "max": 15, "step": 1, "default": 8 }
+  ],
+  "blocks": [
+    { "type": "frase", "name": "Frase o reseña", "settings": [
+      { "type": "textarea", "id": "quote", "label": "Texto" },
+      { "type": "text", "id": "author", "label": "Nombre" },
+      { "type": "text", "id": "role", "label": "Profesión, empresa o fuente" },
+      { "type": "url", "id": "link", "label": "Enlace al vino" },
+      { "type": "text", "id": "link_label", "label": "Texto del enlace", "default": "Ver el vino" }
+    ] }
+  ],
+  "presets": [{ "name": "El Trece: frases" }]
+}
+{% endschema %}

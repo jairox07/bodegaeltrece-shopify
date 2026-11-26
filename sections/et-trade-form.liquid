@@ -1,0 +1,73 @@
+{%- comment -%} Alta de restaurantes, vinotecas y hoteles. Llega como contacto con etiqueta "restaurante". {%- endcomment -%}
+{%- assign s = section.settings -%}
+<section class="et-trade-wrap" id="restaurantes">
+ <div class="et-trade">
+  <div>
+    {%- if s.eyebrow != blank -%}<p class="et-eyebrow">{{ s.eyebrow }}</p>{%- endif -%}
+    <h2 class="et-h2">{{ s.title }}</h2>
+    <ol class="et-trade__list">
+      {%- for block in section.blocks -%}
+        <li {{ block.shopify_attributes }}><b>{{ block.settings.label }}</b><span>{{ block.settings.text }}</span></li>
+      {%- endfor -%}
+    </ol>
+  </div>
+  {%- form 'contact', id: 'EtTradeForm', class: 'et-form et-trade__form' -%}
+    {%- if form.posted_successfully? -%}
+      <p class="et-ok">{{ s.success }}</p>
+    {%- else -%}
+      {%- if form.errors -%}<p class="et-err">{{ form.errors | default_errors }}</p>{%- endif -%}
+      <input type="hidden" name="contact[tags]" value="restaurante">
+      <label for="EtTrName">Nombre del negocio</label>
+      <input id="EtTrName" name="contact[Negocio]" required>
+      <label for="EtTrType">Tipo de negocio</label>
+      <select id="EtTrType" name="contact[Tipo]"><option>Restaurante</option><option>Vinoteca o cava</option><option>Hotel</option><option>Bar</option></select>
+      <label for="EtTrContact">Tu nombre</label>
+      <input id="EtTrContact" name="contact[name]" required>
+      <label for="EtTrEmail">Correo</label>
+      <input id="EtTrEmail" type="email" name="contact[email]" required>
+      <label for="EtTrTel">WhatsApp</label>
+      <input id="EtTrTel" type="tel" name="contact[phone]" pattern="[0-9 +]{10,16}" required>
+      <button type="submit" class="button">{{ s.button }}</button>
+    {%- endif -%}
+  {%- endform -%}
+ </div>
+</section>
+{% stylesheet %}
+  .et-trade-wrap { background: #15110E; color: #EDE6D6; }
+  .et-trade-wrap * { opacity: 1; }
+  .et-trade { max-width: 1360px; margin: 0 auto; box-sizing: border-box; padding: clamp(56px, 8vw, 112px) clamp(16px, 4vw, 48px); display: grid; grid-template-columns: .9fr 1.1fr; gap: clamp(28px, 5vw, 72px); align-items: center; }
+  .et-trade .et-eyebrow { color: #C9A35C; letter-spacing: .14em; text-transform: uppercase; font-size: .78rem; margin: 0 0 14px; }
+  .et-trade .et-h2 { color: #EDE6D6; margin: 0; }
+  .et-trade__list { list-style: none; padding: 0; margin: 32px 0 0; }
+  .et-trade__list li { display: grid; grid-template-columns: 90px 1fr; gap: 14px; padding-block: 16px; border-top: 1px solid rgba(201,163,92,.35); }
+  .et-trade__list b { color: #C9A35C; text-transform: uppercase; letter-spacing: .1em; font-size: .78rem; font-weight: 600; padding-top: 3px; }
+  .et-trade__list span { color: rgba(237,230,214,.85); }
+  .et-trade__form { background: #EDE6D6; color: #15110E; border-radius: 4px; padding: clamp(24px, 3.4vw, 40px); display: grid; gap: 6px; box-shadow: 0 30px 70px -30px rgba(0,0,0,.6); }
+  .et-trade__form label { color: #6b5228; text-transform: uppercase; letter-spacing: .12em; font-size: .72rem; font-weight: 600; margin-top: 10px; }
+  .et-trade__form input, .et-trade__form select { width: 100%; box-sizing: border-box; padding: 12px 14px; border: 1px solid rgba(21,17,14,.25); border-radius: 4px; background: #fff; color: #15110E; font: inherit; }
+  .et-trade__form input:focus, .et-trade__form select:focus { outline: 2px solid #C9A35C; outline-offset: 1px; }
+  .et-trade__form .button { margin-top: 18px; justify-self: start; background: #15110E; color: #EDE6D6; border: 0; border-radius: 4px; padding: 14px 28px; cursor: pointer; }
+  .et-trade__form .button:hover { background: #8c6a2e; }
+  .et-trade__form .et-ok, .et-trade__form .et-err { color: #15110E; }
+  @media (max-width: 749px) { .et-trade { grid-template-columns: 1fr; } }
+{% endstylesheet %}
+{% schema %}
+{
+  "name": "El Trece: restaurantes",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Antetítulo", "default": "Restaurantes, vinotecas y hoteles" },
+    { "type": "text", "id": "title", "label": "Título", "default": "Una etiqueta mexicana con historia, para tu carta." },
+    { "type": "text", "id": "button", "label": "Botón", "default": "Quiero una muestra" },
+    { "type": "text", "id": "success", "label": "Mensaje al enviar", "default": "Gracias. Te escribimos por WhatsApp para agendar tu muestra." }
+  ],
+  "blocks": [{ "type": "beneficio", "name": "Beneficio", "settings": [
+    { "type": "text", "id": "label", "label": "Etiqueta", "default": "Copa" },
+    { "type": "text", "id": "text", "label": "Texto", "default": "Precio de mayoreo pensado para servir por copa." }
+  ] }],
+  "presets": [{ "name": "El Trece: restaurantes", "blocks": [
+    { "type": "beneficio", "settings": { "label": "Copa", "text": "Precio de mayoreo pensado para servir por copa, con margen para tu carta." } },
+    { "type": "beneficio", "settings": { "label": "Cata", "text": "Una cata guiada para tu equipo de piso, para que sepan contarlo en la mesa." } },
+    { "type": "beneficio", "settings": { "label": "Evento", "text": "Noche de maridaje co-promocionada en nuestras redes y las tuyas." } }
+  ] }]
+}
+{% endschema %}
